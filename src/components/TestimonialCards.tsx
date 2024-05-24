@@ -1,47 +1,47 @@
 'use client'
 import { InfiniteMovingCards } from "./ui/infinite-moving-cards";
 
-const musicSchoolTestimonials = [
-    {
-      quote:
-        'Joining the music school transformed my understanding of music and helped me to truly discover my own sound. The instructors are world-class!',
-      name: 'Alex Johnson',
-      title: 'Guitar Student',
-    },
-    {
-      quote:
-        "The community and support at this school are unmatched. I've grown not just as a pianist, but also as a performer, thanks to their comprehensive approach.",
-      name: 'Samantha Lee',
-      title: 'Piano Student',
-    },
-    {
-      quote:
-        "This school offered me the tools and confidence to take my singing to the next level. I'm endlessly grateful for the personalized coaching.",
-      name: 'Michael Chen',
-      title: 'Vocal Student',
-    },
-    {
-      quote:
-        'As a violinist, finding the right mentor can be challenging, but this school matched me with a teacher who truly understands my goals and challenges.',
-      name: 'Emily Taylor',
-      title: 'Violin Student',
-    },
-    {
-      quote:
-        'The production courses here opened my eyes to the intricacies of music production. Highly recommend for any aspiring producers!',
-      name: 'Chris Morales',
-      title: 'Music Production Student',
-    },
-  ];
+const tripPlannerTestimonials = [
+  {
+    quote:
+      'Using this trip planner was a game-changer for me. It took the stress out of planning and allowed me to focus on enjoying my travels.',
+    name: 'Emily Johnson',
+    title: 'Frequent Traveler',
+  },
+  {
+    quote:
+      "I've never been good at planning trips, but this platform made it so easy. The recommendations were spot-on, and I had the best vacation ever!",
+    name: 'Adam Smith',
+    title: 'Adventure Enthusiast',
+  },
+  {
+    quote:
+      "I was skeptical at first, but after using this trip planner, I'm a believer. It helped me discover hidden gems I never would have found on my own.",
+    name: 'Jessica Wong',
+    title: 'Solo Traveler',
+  },
+  {
+    quote:
+      'Planning a family vacation can be chaotic, but this tool made it a breeze. It catered to everyone’s interests and made sure we had a memorable trip.',
+    name: 'David Miller',
+    title: 'Family Traveler',
+  },
+  {
+    quote:
+      'I travel for work frequently, and this trip planner has become my go-to tool. It saves me time and ensures I make the most of my business trips.',
+    name: 'Sarah Evans',
+    title: 'Business Traveler',
+  },
+];
 
 function MusicSchoolTestimonials() {
   return (
-    <div className="h-[40rem] w-full dark:bg-black dark:bg-grid-white/[0.2] relative flex flex-col items-center justify-center overflow-hidden">
-        <h2 className="text-3xl font-bold text-center mb-8 z-10">Hear our Harmony: Voices of success</h2>
+    <div className="h-[40rem] w-full dark:bg-black dark:bg-dot-white/[0.2] relative flex flex-col items-center justify-center overflow-hidden">
+        <h2 className="text-3xl font-bold text-center mb-8 z-10">Discover the Symphony of Success: Stories from Our Users</h2>
         <div className="flex justify-center w-full overflow-hidden px-4 sm:px-6 lg:px-8">
             <div className="w-full max-w-6xl">
             <InfiniteMovingCards
-                items={musicSchoolTestimonials}
+                items={tripPlannerTestimonials}
                 direction="right"
                 speed="slow"
       />

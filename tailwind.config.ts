@@ -41,6 +41,31 @@ function addSvgPatterns({ matchUtilities, theme }: any) {
   );
 }
 
+// Plugin to add the `scrollbar-hide` utility
+function scrollbarHide({ addUtilities }: any) {
+  addUtilities({
+    '.scrollbar-hide': {
+      /* IE and Edge */
+      '-ms-overflow-style': 'none',
+      /* Firefox */
+      'scrollbar-width': 'none',
+      /* Safari and Chrome */
+      '&::-webkit-scrollbar': {
+        display: 'none',
+      },
+    },
+    '.scrollbar-default': {
+      /* IE and Edge */
+      '-ms-overflow-style': 'auto',
+      /* Firefox */
+      'scrollbar-width': 'auto',
+      /* Safari and Chrome */
+      '&::-webkit-scrollbar': {
+        display: 'block',
+      },
+    },
+  });
+}
 
 const config: Config = {
   content: [
@@ -51,16 +76,29 @@ const config: Config = {
   darkMode: 'class',
   theme: {
     extend: {
-      animation:{
+      scrollbar: ['rounded'],
+      colors: {
+        gray: {
+          900: '#1a1a1a',
+          800: '#2d2d2d',
+          700: '#3f3f3f',
+          600: '#4f4f4f',
+          500: '#5f5f5f',
+          400: '#6f6f6f',
+          300: '#7f7f7f',
+          200: '#8f8f8f',
+          100: '#9f9f9f',
+        },
+      },
+      animation: {
         spotlight: "spotlight 2s ease .75s 1 forwards",
         scroll: "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite"
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
-      keyframes:{
+      keyframes: {
         spotlight: {
           '0%': { opacity: '0', transform: 'translate(-72%, -62%) scale(0.5)' },
           '100%': { opacity: '1', transform: 'translate(-50%,-40%) scale(1)' },
@@ -70,9 +108,14 @@ const config: Config = {
             transform: "translate(calc(-50% - 0.5rem))",
           },
         },
-      }
+      },
     },
   },
-  plugins: [addVariablesForColors, addSvgPatterns],
+  plugins: [
+    addVariablesForColors,
+    addSvgPatterns,
+    scrollbarHide,
+  ],
 };
+
 export default config;

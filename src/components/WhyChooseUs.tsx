@@ -3,43 +3,44 @@
 import React from "react";
 import { StickyScroll } from "./ui/sticky-scroll-reveal";
 
-const musicSchoolContent = [
-    {
-      title: 'Discover Your Sound with Us: A Personal Journey in Music Mastery',
-      description:
-        'Embark on a musical journey that’s uniquely yours. Our personalized instruction adapts to your individual needs, setting the stage for unparalleled growth and creativity. At our music school, your aspirations meet our dedicated support, creating a harmonious path to mastery.',
-    },
-    {
-      title: 'Discover Your Sound with Us: A Personal Journey in Music Mastery',
-      description:
-        'Embark on a musical journey that’s uniquely yours. Our personalized instruction adapts to your individual needs, setting the stage for unparalleled growth and creativity. At our music school, your aspirations meet our dedicated support, creating a harmonious path to mastery.',
-    },
-    {
-      title: 'Discover Your Sound with Us: A Personal Journey in Music Mastery',
-      description:
-        'Embark on a musical journey that’s uniquely yours. Our personalized instruction adapts to your individual needs, setting the stage for unparalleled growth and creativity. At our music school, your aspirations meet our dedicated support, creating a harmonious path to mastery.',
-    },
-    {
-      title: 'Live Feedback & Engagement',
-      description:
-        'Immerse yourself in an interactive learning experience where feedback is immediate, just like real-time changes in a collaborative project. This approach enhances your understanding and mastery of music concepts and performance techniques.',
-    },
-    {
-      title: 'Cutting-Edge Curriculum',
-      description:
-        'Our curriculum is continuously updated to include the latest music education trends and technologies, ensuring you’re always learning with the most current and effective methods. Say goodbye to outdated materials and welcome an education that evolves with the industry.',
-    },
-    {
-      title: 'Limitless Learning Opportunities',
-      description:
-        'With our expansive resource library and dynamic course offerings, you’ll never find yourself without something new to explore. Our platform provides continuous opportunities for growth, ensuring your musical skills are always advancing.',
-    },
-  ];
+const tripPlannerContent = [
+  {
+    title: 'Personalized Trip Planning Experience',
+    description:
+      'Embark on a journey tailored specifically to your preferences and interests. Our AI-powered trip planner creates personalized itineraries that reflect your unique travel style, ensuring every aspect of your trip is designed with you in mind.',
+  },
+  {
+    title: 'Effortless Itinerary Creation',
+    description:
+      'Say goodbye to the hassle of planning every detail of your trip. Our intuitive platform streamlines the itinerary creation process, taking care of everything from transportation and accommodations to activities and dining options.',
+  },
+  {
+    title: 'Real-Time Recommendations and Adjustments',
+    description:
+      'Experience the convenience of receiving real-time recommendations and adjustments based on changing circumstances or your evolving interests. Our AI continuously analyzes data to optimize your itinerary, ensuring you make the most of every moment.',
+  },
+  {
+    title: 'Seamless Integration with Travel Partners',
+    description:
+      'Enjoy seamless integration with our network of travel partners, allowing you to book flights, accommodations, and activities directly through our platform. With everything in one place, managing your trip has never been easier.',
+  },
+  {
+    title: 'Expert Guidance at Your Fingertips',
+    description:
+      'Access expert guidance and travel tips at your fingertips, empowering you to make informed decisions throughout your journey. Whether you’re a seasoned traveler or planning your first adventure, our platform provides the support you need.',
+  },
+  {
+    title: 'Unparalleled Flexibility and Customization',
+    description:
+      'Experience unparalleled flexibility and customization options that cater to your changing needs and preferences. Whether you prefer to stick to a strict schedule or go with the flow, our AI adapts to your style, ensuring a stress-free travel experience.',
+  },
+];
+
 
 function WhyChooseUs() {
   return (
     <div>
-        <StickyScroll content={musicSchoolContent} />
+        <StickyScroll content={tripPlannerContent} />
     </div>
   )
 }
