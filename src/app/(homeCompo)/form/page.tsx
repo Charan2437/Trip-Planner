@@ -5,7 +5,7 @@ import {
     TextRevealCard,
     TextRevealCardDescription,
     TextRevealCardTitle,
-  } from "../../components/ui/text-reveal-card";
+  } from "../../../components/ui/text-reveal-card";
 
 const TripPlannerForm = () => {
   const [step, setStep] = useState(1);
