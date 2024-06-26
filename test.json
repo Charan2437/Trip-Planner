@@ -1,0 +1,98 @@
+{
+    "Day1": {
+        "name": "Day1",
+        "items": [
+            {
+                "content": "Botanical Garden",
+                "id": "ooty-botanical-garden",
+                "lng": "76.6935",
+                "lat": "11.3612",
+                "description": "A sprawling garden showcasing a diverse collection of flora, including rare orchids and rhododendrons.",
+                "Best_time_to_visit": "9 am - 5 pm",
+                "Famous_for": "Exotic flowers, scenic landscapes, and a serene atmosphere."
+            },
+            {
+                "content": "Dodabetta Peak",
+                "id": "dodabetta-peak",
+                "lng": "76.6992",
+                "lat": "11.4172",
+                "description": "The highest peak in the Nilgiris, offering breathtaking panoramic views of the surrounding hills and valleys.",
+                "Best_time_to_visit": "Sunrise and sunset",
+                "Famous_for": "Stunning vistas, hiking trails, and a tea plantation."
+            },
+            {
+                "content": "Ooty Lake",
+                "id": "ooty-lake",
+                "lng": "76.6882",
+                "lat": "11.3639",
+                "description": "A picturesque artificial lake surrounded by lush greenery, popular for boating and picnicking.",
+                "Best_time_to_visit": "All day",
+                "Famous_for": "Tranquil waters, boating options, and scenic walks."
+            }
+        ]
+    },
+    "Day2": {
+        "name": "Day2",
+        "items": [
+            {
+                "content": "Tea Factory Tour",
+                "id": "ooty-tea-factory",
+                "lng": "76.6882",
+                "lat": "11.3639",
+                "description": "A visit to a local tea factory to witness the process of tea production, from leaf to cup.",
+                "Best_time_to_visit": "9 am - 5 pm",
+                "Famous_for": "Insight into tea cultivation, tea tasting sessions, and scenic views."
+            },
+            {
+                "content": "Government Botanical Garden",
+                "id": "ooty-govt-botanical-garden",
+                "lng": "76.6935",
+                "lat": "11.3612",
+                "description": "A vast garden with a diverse collection of flora, including exotic plants and trees.",
+                "Best_time_to_visit": "9 am - 5 pm",
+                "Famous_for": "Serene atmosphere, beautiful flowers, and a peaceful walk."
+            },
+            {
+                "content": "Stone House",
+                "id": "ooty-stone-house",
+                "lng": "76.6914",
+                "lat": "11.3624",
+                "description": "A historic stone house built in the 19th century, now a museum showcasing the history of Ooty.",
+                "Best_time_to_visit": "10 am - 5 pm",
+                "Famous_for": "Architectural marvel, antique furniture, and historical artifacts."
+            }
+        ]
+    },
+    "Day3": {
+        "name": "Day3",
+        "items": [
+            {
+                "content": "Coaker's Walk",
+                "id": "coakers-walk",
+                "lng": "76.6926",
+                "lat": "11.3605",
+                "description": "A scenic walking path with breathtaking views of the valley and surrounding hills.",
+                "Best_time_to_visit": "Sunrise and sunset",
+                "Famous_for": "Panoramic views, fresh air, and a peaceful walk."
+            },
+            {
+                "content": "Emerald Lake",
+                "id": "emerald-lake",
+                "lng": "76.6924",
+                "lat": "11.3626",
+                "description": "A small, serene lake surrounded by lush greenery, perfect for a relaxing picnic or stroll.",
+                "Best_time_to_visit": "All day",
+                "Famous_for": "Tranquil waters, lush surroundings, and scenic views."
+            },
+            {
+                "content": "Pykara Lake",
+                "id": "pykara-lake",
+                "lng": "76.7213",
+                "lat": "11.4242",
+                "description": "A picturesque lake nestled amidst the hills, offering boating and fishing opportunities.",
+                "Best_time_to_visit": "All day",
+                "Famous_for": "Stunning lake views, boating, and fishing."
+            }
+        ]
+    }
+}
