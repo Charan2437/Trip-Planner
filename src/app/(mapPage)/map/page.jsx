@@ -3,8 +3,22 @@
 import React, { useEffect } from 'react';
 import styles from './map.module.css';
 import 'tailwindcss/tailwind.css';
+import axios from 'axios';
+import MapComponent from './map';
+import GoogleMapReact from "google-map-react";
+
 
 const Map = () => {
+  useEffect(() => {
+    // Fetch data from API
+    axios.get('https://jsonplaceholder.typicode.com/todos/1')
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
 
   return (
     <div className="p-8 bg-black text-white">
@@ -47,7 +61,9 @@ const Map = () => {
         </div>
 
         {/* Right Side - Placeholder for Map */}
-        <div className="md:col-span-8 map bg-gray-700 rounded-lg shadow-md h-100"></div>
+        <div className="md:col-span-8 map bg-gray-700 rounded-lg shadow-md h-100">
+          <MapComponent />
+        </div>
       </div>
 
       {/* Bottom - Placeholder for Drag and Drop UI */}
@@ -65,6 +81,7 @@ const Map = () => {
           </div>
         </div>
       </div>
+      <div></div>
     </div>
   );
 };
