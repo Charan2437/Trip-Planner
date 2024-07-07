@@ -249,72 +249,94 @@ const MapComponent = () => {
   });
   const [places, setPlaces] = useState([]);
   const [mapRef, setMapRef] = useState(null);
-//   const [directionsRenderer, setDirectionsRenderer] = useState(null);
-    // const [directionsService, setDirectionsService] = useState(null);
-    // const [mapsApi, setMapsApi] = useState(null);
-    // const [directions, setDirections] = useState([]);
-    // const [waypoints, setWaypoints] = useState([]);
-    const [mapInstance , setMapInstance] = useState(null);  
-
-
-
-    // useEffect(() => {
-    //     if (mapsApi) {
-    //       const service = new mapsApi.DirectionsService();
-    //       const renderer = new mapsApi.DirectionsRenderer();
-    //       setDirectionsRenderer(renderer);
-    //       setDirectionsService(service);
-    //     }
-    //   }, [mapsApi]);
-    
-    //   const RenderDirections = (map, maps , ListPlaces) => {
-    //     // List Places should be array of { lat : , lng : };
-    //     console.log("comming TO render directions")
-    //     ListPlaces = ListPlaces.filter(place => {
-    //       let lat = parseFloat(place.lat);
-    //       let lng = parseFloat(place.lng);
-    //       return !isNaN(lat) && !isNaN(lng);
-    //     });
-        
-    //     console.log({ListPlaces})
-    //     if(!ListPlaces || ListPlaces.length < 2){
-    //       ListPlaces = [{lat: 37.77, lng: -122.447}, { lat: 37.79, lng: -122.41 }, { lat: 37.79, lng: -122.41 }, {lat: 37.768, lng: -122.511 }]
-    //     }
-    //     directionsRenderer?.setMap(null);
-    //     let n = ListPlaces.length;
-    //     const waypts = ListPlaces.slice(1, n-1).map(place => {
-    //       return {
-    //         location: { lat: place.lat, lng: place.lng },
-    //         stopover: true,
-    //       }
-    //     });
-    //     directionsRenderer?.setMap(map);
-    //     setDirectionsRenderer(directionsRenderer);
-    //     directionsService?.route(
-    //       {
-    //         origin: { lat: ListPlaces[0].lat, lng: ListPlaces[0].lng },
-    //         destination: { lat: ListPlaces[n-1].lat, lng: ListPlaces[n-1].lng },
-    //         travelMode: maps.TravelMode.DRIVING,    
-    //         waypoints: waypts,
-    //       },
-          
-    //       (response, status) => {
-    //         if (status === "OK") {
-    //           directionsRenderer.setDirections(response);
-    //           console.log(response?.routes[0].legs[0].steps[0].instructions    )
-    //           const stepInstructions = response?.routes[0].legs.map(leg => leg.steps.map(step => step.instructions));
-    //           setDirections(...stepInstructions);
-    //         } else {
-    //           window.alert("Directions request failed due to " + status);
-    //         }
-    //       }
-    //     );
-    //   };
+  const [mapInstance, setMapInstance] = useState(null);
+  const [mapsApi, setMapsApi] = useState(null);
+  const [directionsRenderer, setDirectionsRenderer] = useState(null);
+  const [directionsService, setDirectionsService] = useState(null);
+  const [directions , setDirections]= useState(null);
+  const [ListPlaces , setListPlaces] = useState([]);
 
 
   const onMapLoad = useCallback((map) => {
     setMapRef(map);
+    setMapInstance(map);
+    setMapsApi(map);
   }, []);
+
+  useEffect(() => {
+    if (mapsApi) {
+      const service = new google.maps.DirectionsService();
+      const renderer = new google.maps.DirectionsRenderer();
+      setDirectionsRenderer(renderer);
+      setDirectionsService(service);
+    }
+  }, [mapsApi]);
+
+
+  
+  const RenderDirections = (map, maps , ListPlaces) => {
+    // List Places should be array of { lat : , lng : };
+    console.log("comming TO render directions")
+    if(mapsApi==null || map == null) return;
+    ListPlaces = ListPlaces.filter(place => {
+      let lat = parseFloat(place.lat);
+      let lng = parseFloat(place.lng);
+      return !isNaN(lat) && !isNaN(lng);
+    });
+    
+    console.log({ListPlaces})
+    if(!ListPlaces || ListPlaces.length < 2){
+      ListPlaces = [{lat: 37.77, lng: -122.447}, { lat: 37.79, lng: -122.41 }, { lat: 37.79, lng: -122.41 }, {lat: 37.768, lng: -122.511 }]
+    }
+    // if(!map || !maps) return;
+    // const directionsService = new maps.DirectionsService();
+    // const directionsRenderer = new maps.DirectionsRenderer();
+    directionsRenderer?.setMap(null);
+    let n = ListPlaces.length;
+    const waypts = ListPlaces.slice(1, n-1).map(place => {
+      return {
+        location: { lat: place.lat, lng: place.lng },
+        stopover: true,
+      }
+    });
+    directionsRenderer?.setMap(map);
+    setDirectionsRenderer(directionsRenderer);
+    directionsService?.route(
+      {
+        origin: { lat: ListPlaces[0].lat, lng: ListPlaces[0].lng },
+        destination: { lat: ListPlaces[n-1].lat, lng: ListPlaces[n-1].lng },
+        travelMode: google.maps.TravelMode.DRIVING,
+        // waypoints: [
+        //   // {
+        //   //   location: { lat: 37.79, lng: -122.41 },
+        //   //   stopover: true,
+        //   // },
+        //   // {
+        //   //   location: { lat: 37.79, lng: -122.41 },
+        //   //   stopover: true,
+        //   // },
+
+        // ],
+        waypoints: waypts,
+      },
+      
+      (response, status) => {
+        if (status === "OK") {
+          directionsRenderer.setDirections(response);
+          console.log(response?.routes[0].legs[0].steps[0].instructions    )
+          const stepInstructions = response?.routes[0].legs.map(leg => leg.steps.map(step => step.instructions));
+          setDirections(...stepInstructions);
+        } else {
+          window.alert("Directions request failed due to " + status);
+        }
+      }
+    );
+  };
+
+  const DirectionStop = () => {
+    directionsRenderer?.setMap(null);
+  }
+
 
   const fetchPlaces = async () => {
     try {
