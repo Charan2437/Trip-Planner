@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import styles from './map.module.css';
 import 'tailwindcss/tailwind.css';
 import axios from 'axios';
@@ -9,6 +9,10 @@ import GoogleMapReact from "google-map-react";
 
 
 const Map = () => {
+
+  const [ListPlaces, setListPlaces] = useState([]);
+
+
   useEffect(() => {
     // Fetch data from API
     axios.get('https://jsonplaceholder.typicode.com/todos/1')
@@ -62,7 +66,9 @@ const Map = () => {
 
         {/* Right Side - Placeholder for Map */}
         <div className="md:col-span-8 map bg-gray-700 rounded-lg shadow-md h-100">
-          <MapComponent />
+          <MapComponent
+            places={ListPlaces}
+          />
         </div>
       </div>
 

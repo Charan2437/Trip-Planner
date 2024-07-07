@@ -4,7 +4,7 @@ const mapStyles = [
         "elementType": "labels.text",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -24,7 +24,7 @@ const mapStyles = [
         "featureType": "administrative",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -32,7 +32,7 @@ const mapStyles = [
         "featureType": "transit",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -40,7 +40,7 @@ const mapStyles = [
         "featureType": "poi.attraction",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -60,7 +60,7 @@ const mapStyles = [
         "featureType": "poi.business",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -68,7 +68,7 @@ const mapStyles = [
         "featureType": "poi.medical",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -76,7 +76,7 @@ const mapStyles = [
         "featureType": "poi.place_of_worship",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -84,7 +84,7 @@ const mapStyles = [
         "featureType": "poi.school",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -92,7 +92,7 @@ const mapStyles = [
         "featureType": "poi.sports_complex",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -127,7 +127,7 @@ const mapStyles = [
                 "color": "#ffffff"
             },
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -136,7 +136,7 @@ const mapStyles = [
         "elementType": "labels.icon",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -161,7 +161,7 @@ const mapStyles = [
         "elementType": "labels.icon",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -170,7 +170,7 @@ const mapStyles = [
         "elementType": "labels.icon",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -214,7 +214,7 @@ const mapStyles = [
                 "color": "#c7c7c7"
             },
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -246,7 +246,7 @@ const mapStyles = [
         "featureType": "road.local",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -264,7 +264,7 @@ const mapStyles = [
         "elementType": "geometry",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -272,7 +272,7 @@ const mapStyles = [
         "featureType": "landscape",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
@@ -281,7 +281,7 @@ const mapStyles = [
         "elementType": "labels",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
