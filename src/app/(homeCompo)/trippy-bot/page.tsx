@@ -15,14 +15,14 @@ function Page() {
     "Places to visit in India",
   ];
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:8080/api/chatbot", {
+      const res = await fetch("http://localhost:4000/api/chatbot", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
