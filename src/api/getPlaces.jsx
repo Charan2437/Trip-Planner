@@ -13,13 +13,13 @@ import Script from "next/script";
             lng: (bounds.west + bounds.east) / 2,
           };
     const request = {
-        fields: ["displayName", "location", "businessStatus"],
+        fields: ["displayName", "location", "businessStatus","photos","priceLevel","rating","userRatingCount","websiteURI","hasWiFi","editorialSummary"],
         locationRestriction: {
             center: center,
             radius: 500,
         },
         includedPrimaryTypes: ["restaurant"],
-        maxResultCount: 5,
+        maxResultCount: 2,
         language: "en-US",
         region: "us",
     };
