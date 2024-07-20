@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, useLoadScript, Marker,InfoWindow } from '@react-google-maps/api';
 import getPlaces from '../../../api/getPlaces';
 import mapStyles from "./styles";
 import { Polyline } from "@react-google-maps/api";
@@ -22,7 +22,7 @@ const options = {
   zoomControl: true,
 };
 
-const MapComponent = ({setSelectedPlace}) => {
+const MapComponent = ({setSelectedPlace, ListPlaces,dirId}) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries,
@@ -34,12 +34,29 @@ const MapComponent = ({setSelectedPlace}) => {
   const [directionsRenderer, setDirectionsRenderer] = useState(null);
   const [directionsService, setDirectionsService] = useState(null);
   const [directions , setDirections]= useState(null);
-  const [ListPlaces , setListPlaces] = useState([]);
+  // const [ListPlaces , setListPlaces] = useState([]);
+  const [hoveredPlace, setHoveredPlace] = useState(null);
+
   const onMapLoad = useCallback((map) => {
     setMapRef(map);
     setMapInstance(map);
     setMapsApi(map);
   }, []);
+
+  const RenderHelper=()=>{
+    if(dirId===0) return;
+    const latitudesAndLongitudes = ListPlaces[dirId]?.components.map(({ location }) => ({
+      lat: location.lat,
+      lng: location.lng
+    }));
+    console.log(latitudesAndLongitudes)
+    RenderDirections(mapInstance, mapsApi, latitudesAndLongitudes)
+  }
+
+  useEffect(()=>{
+    console.log(dirId,"from map")
+    RenderHelper()
+  },[dirId])
 
   useEffect(() => {
     if (mapsApi) {
@@ -52,7 +69,6 @@ const MapComponent = ({setSelectedPlace}) => {
 
   const RenderDirections = (map, maps , ListPlaces) => {
     // List Places should be array of { lat : , lng : };
-    console.log("comming TO render directions")
     if(mapsApi==null || map == null) return;
     ListPlaces = ListPlaces.filter(place => {
       let lat = parseFloat(place.lat);
@@ -60,7 +76,7 @@ const MapComponent = ({setSelectedPlace}) => {
       return !isNaN(lat) && !isNaN(lng);
     });
     
-    console.log({ListPlaces})
+    // console.log({ListPlaces})
     if(!ListPlaces || ListPlaces.length < 2){
       ListPlaces = [{lat: 37.77, lng: -122.447}, { lat: 37.79, lng: -122.41 }, { lat: 37.79, lng: -122.41 }, {lat: 37.768, lng: -122.511 }]
     }
@@ -72,6 +88,7 @@ const MapComponent = ({setSelectedPlace}) => {
         stopover: true,
       }
     });
+    console.log("comming TO render directions")
     directionsRenderer?.setMap(map);
     setDirectionsRenderer(directionsRenderer);
     directionsService?.route(
@@ -84,8 +101,11 @@ const MapComponent = ({setSelectedPlace}) => {
       
       (response, status) => {
         if (status === "OK") {
+          console.log("comming He")
+          console.log({response})
           directionsRenderer.setDirections(response);
           console.log(response?.routes[0].legs[0].steps[0].instructions    )
+          // console.log(response?.routes )
           const stepInstructions = response?.routes[0].legs.map(leg => leg.steps.map(step => step.instructions));
           setDirections(...stepInstructions);
         } else {
@@ -93,6 +113,7 @@ const MapComponent = ({setSelectedPlace}) => {
         }
       }
     );
+    console.log({directions})
   };
 
   const DirectionStop = () => {
@@ -130,8 +151,27 @@ const MapComponent = ({setSelectedPlace}) => {
               lat: parseFloat(place.Eg.location.lat),
               lng: parseFloat(place.Eg.location.lng),
             }}
-            onClick={() => { console.log("hello"); setSelectedPlace(place); console.log(place) }}
-          />
+            onMouseOver={() => setHoveredPlace(place)} // Set hovered place on hover
+            onMouseOut={() => setHoveredPlace(null)} 
+              // Clear hovered place on mouse out
+            onClick={() => setSelectedPlace(place)}    // Set selected place on click
+          >
+            {(hoveredPlace === place ) && (
+              <InfoWindow
+                position={{
+                  lat: parseFloat(place.Eg.location.lat),
+                  lng: parseFloat(place.Eg.location.lng),
+                }}
+                onCloseClick={() => setSelectedPlace(null)} // Close info window on click
+              >
+                <div style={{ color: 'black' }}>
+                  <h2>{place.Eg.displayName}</h2> {/* Display place name */}
+                  <p><strong>Status:</strong> {place.businessStatus}</p> {/* Business Status */}
+                  <p><strong>Rating:</strong> {place.rating} ({place.userRatingCount} ratings)</p> {/* Rating and User Rating Count */}
+                </div>
+              </InfoWindow>
+            )}
+          </Marker>
         ))}
       </GoogleMap>
       <button onClick={fetchPlaces}>Load places</button>

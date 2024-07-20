@@ -18,7 +18,7 @@ import Script from "next/script";
             center: center,
             radius: 500,
         },
-        includedPrimaryTypes: ["restaurant"],
+        includedPrimaryTypes: ["tourist_attraction","hindu_temple"],
         maxResultCount: 2,
         language: "en-US",
         region: "us",

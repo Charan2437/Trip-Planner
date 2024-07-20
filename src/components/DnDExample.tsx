@@ -18,34 +18,35 @@ interface Cards {
         name: string;
     }[];
 }
-    const DndExample = ({ CardsData }: { CardsData: Cards[] }) => {
-        const cardsData= CardsData ;
-        const [data, setData] = useState<Cards[] | []>([])
+const DndExample = ({ CardsData, setCardsData,setDirId }: { CardsData: Cards[]; setCardsData: (cards: Cards[]) => void;  setDirId: React.Dispatch<React.SetStateAction<number>>; // More accurate type for setDirId
+}) => {
+    // const cardsData= CardsData ;
+        // const [data, setData] = useState<Cards[] | []>([])
         const onDragEnd = (result: DropResult) => {
             const { source, destination } = result;
             if (!destination) return;
             if (source.droppableId !== destination.droppableId) {
-                const newData = [...JSON.parse(JSON.stringify(data))];//shallow copy concept
+                const newData = [...JSON.parse(JSON.stringify(CardsData))];//shallow copy concept
                 const oldDroppableIndex = newData.findIndex(x => x.id == source.droppableId.split("droppable")[1]);
                 const newDroppableIndex = newData.findIndex(x => x.id == destination.droppableId.split("droppable")[1])
                 const [item] = newData[oldDroppableIndex].components.splice(source.index, 1);
                 newData[newDroppableIndex].components.splice(destination.index, 0, item);
                 console.log(newData)
-                setData([...newData]);
+                setCardsData([...newData]);
             } else {
-                const newData = [...JSON.parse(JSON.stringify(data))];//shallow copy concept
+                const newData = [...JSON.parse(JSON.stringify(CardsData))];//shallow copy concept
                 const droppableIndex = newData.findIndex(x => x.id == source.droppableId.split("droppable")[1]);
                 const [item] = newData[droppableIndex].components.splice(source.index, 1);
                 newData[droppableIndex].components.splice(destination.index, 0, item);
-                setData([...newData]);
+                setCardsData([...newData]);
                 console.log(newData)
             }
         };
-        useEffect(() => {
-            setData(cardsData)
+        // useEffect(() => {
+        //     setCardsData(CardsData)
             
-        }, [CardsData])
-        if (!data.length) {
+        // }, [CardsData])
+        if (!CardsData.length) {
             return <LoadingSkeleton />
         }
     return (
@@ -53,7 +54,7 @@ interface Cards {
             <h1 className="text-center mt-8 mb-3 font-bold text-[25px] ">Drag and Drop Application</h1>
             <div className="flex gap-4 justify-between my-20 mx-4 flex-col lg:flex-row">
                 {
-                    data.map((val, index) => {
+                    CardsData.map((val, index) => {
                         return (
                             <Droppable key={index} droppableId={`droppable${index}`}>
                                 {
@@ -63,6 +64,7 @@ interface Cards {
                                             ref={provided.innerRef}
                                         >
                                             <h2 className="text-center font-bold mb-6 text-black">{val.title}</h2>
+                                            <button onClick={()=>setDirId(val?.id)}> Show Directions </button>
                                             {
                                                 val.components?.map((component, index) => (
                                                     <Draggable key={component.id} draggableId={component.id.toString()} index={index}>
