@@ -18,6 +18,8 @@ import { updateProfile } from "firebase/auth";
 import { db } from "../../../connection";
 import { getUserInfo } from '../../../myapi/getUserInfo';
 import { useStore } from "../../../store/user";
+import { useRouter } from 'next/navigation';
+
 
 function LoginForm() {
   const [isActive, setIsActive] = useState(true);
@@ -27,6 +29,7 @@ function LoginForm() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [CurrUser, setCurrUser] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const router = useRouter();
   const [emailValid, setEmailValid] = useState(true); // State for email validation
   const [emailExists, setEmailExists] = useState(false); // State to track if email exists
   const [authError, setAuthError] = useState(""); // State to track authentication errors
@@ -62,6 +65,7 @@ function LoginForm() {
 
       await signInWithEmailAndPassword(auth, email, password);
       console.log("User signed in successfully.");
+      router.push('/');
     } catch (err) {
       console.error("Error signing in:", err.message);
       setAuthError("Incorrect email or password. Please try again."); // Set authentication error message
@@ -72,6 +76,7 @@ function LoginForm() {
     e.preventDefault();
     try {
       await signInWithPopup(auth, googleProvider);
+      router.push('/');
     } catch (err) {
       console.error("Error signing in with Google:", err.message);
     }
@@ -86,6 +91,7 @@ function LoginForm() {
           name: name,
           email: email,
         });
+        router.push('/');
       }).catch((error) => {
         console.error("Error in signInWithPopup or addDoc:", error.message);
       });
@@ -118,6 +124,7 @@ function LoginForm() {
           email: email,
         });
         console.log("User signed up successfully.");
+        router.push('/');
       });
     } catch (err) {
       console.error("Error signing up:", err.message);
@@ -140,7 +147,6 @@ function LoginForm() {
           setCurrUser(user.email);
         }
         getUserInfo().then((data) => {
-          console.log({ data });
           setUser(oldUser => ({ ...oldUser, ...data }));
         }).catch((err) => {
           console.error("Error fetching user info:", err.message);

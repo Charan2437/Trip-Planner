@@ -15,9 +15,16 @@ import DragDrop from '@/app/(dnd)/dnd/page';
 
 const Map = () => {
 
-  const [ListPlaces, setListPlaces] = useState([]);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [data, setData] = useState([]);
+  const [dirId,setDirId]=useState(0);
+
+  useEffect(()=>{
+    console.log(dirId)
+
+
+
+  },[dirId])
 
   useEffect(() => {
     const cardsData = [
@@ -25,42 +32,42 @@ const Map = () => {
         id: 0,
         title: "All_Places",
         components: [
-          {
-            id: 100,
-            name: "material ui"
-          },
-          {
-            id: 200,
-            name: "bootstrap"
-          },
+          // {
+          //   id: 100,
+          //   name: "material ui"
+          // },
+          // {
+          //   id: 200,
+          //   name: "bootstrap"
+          // },
         ]
       },
       {
         id: 1,
         title: "Day 1",
         components: [
-          {
-            id: 300,
-            name: "react"
-          },
-          {
-            id: 400,
-            name: "node"
-          },
+          // {
+          //   id: 300,
+          //   name: "react"
+          // },
+          // {
+          //   id: 400,
+          //   name: "node"
+          // },
         ]
       },
       {
         id: 2,
         title: "Day 2",
         components: [
-          {
-            id: 500,
-            name: "redux"
-          },
-          {
-            id: 600,
-            name: "recoil"
-          },
+          // {
+          //   id: 500,
+          //   name: "redux"
+          // },
+          // {
+          //   id: 600,
+          //   name: "recoil"
+          // },
         ]
       }
     ]
@@ -68,29 +75,21 @@ const Map = () => {
   }, []); 
 
 
-  const addPlan = (component) => {
-    const myObject = selectedPlace.Eg;
-    const newObject = {
-      ...myObject,
-      name: myObject.displayName,
+  const addPlan = () => {
+    const newComponent = selectedPlace.Eg;
+
+        const newObject = {
+      ...newComponent,
+      name: newComponent.displayName,
     }
-
-    const newData = [...data];
-    if (newData.length > 0) {
-        const newComponent = {
-            id: Date.now(),
-            name: component.displayName,
-            details: component
-        };
-        newData[0].components.push(newComponent);
-        setData(newData);
-    }
-};
-
-
-  // const addPlan=()=>{
-  //     console.log({selectedPlace})
-  // }
+    setData(prevData =>
+      prevData.map(card => 
+        card.id === 0
+          ? { ...card, components: [...card.components, newObject] }
+          : card
+      )
+    );
+  };
 
   const Leftcard =({selectedPlace}) => {
     if(!selectedPlace) {
@@ -102,10 +101,9 @@ const Map = () => {
     }
     const defaultPhoto = "https://via.placeholder.com/400";
     
-    let photoURI = selectedPlace.Eg.photos.length > 0 ? selectedPlace.Eg.photos[1].name : defaultPhoto;
+    let photoURI = selectedPlace.Eg.photos.length > 0 ? selectedPlace.Eg.photos[1]?.name : defaultPhoto;
     const placeId = selectedPlace.Eg.id;
     if(photoURI !== defaultPhoto) photoURI = `https://places.googleapis.com/v1/${photoURI}/media?maxWidthPx=400&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
-    console.log(photoURI)
     const editorialSummary = selectedPlace.Eg.editorialSummary || "No editorial summary available.";
     return (
       <div className="card rounded-lg shadow-md overflow-hidden mb-8" key={selectedPlace.Eg.id}> {/* Ensure each place has a unique key */}
@@ -146,12 +144,13 @@ const Map = () => {
         {/* Right Side - Placeholder for Map */}
         <div className="md:col-span-8 map bg-gray-700 rounded-lg shadow-md h-100">
           <MapComponent
-            places={ListPlaces}
+            ListPlaces={data}
             setSelectedPlace={setSelectedPlace}
+            dirId={dirId}
           />
         </div>
       </div>
-    <DragDrop CardsData={data}/>
+    <DragDrop CardsData={data} setCardsData = {setData} setDirId={setDirId}/>
       {/* Bottom - Placeholder for Drag and Drop UI */}
       <div className="mt-8">
         <h2 className="text-xl mb-4 text-white">Bucket List</h2>
