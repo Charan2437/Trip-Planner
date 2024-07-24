@@ -12,121 +12,60 @@ import { useItemsStore } from '@/store/placeitems';
 import DragDrop from '@/app/(dnd)/dnd/page';
 import axios from 'axios';
 import { Herr_Von_Muellerhoff } from 'next/font/google';
+import getHotels from '@/api/getHotels';
+import { get } from 'http';
 
 const Map = () => {
-
+  
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [selectedHotel, setSelectedHotel] = useState(null);
   const [data, setData] = useState([]);
   const [dirId,setDirId]=useState(0);
-
-  useEffect(()=>{
-    console.log(dirId)
-
-
-
-  },[dirId])
-
+  const [counter, setCounter] = useState(1);
+  const [hotels,setHotels]=useState([]);
   useEffect(() => {
     const cardsData = [
       {
         id: 0,
         title: "All_Places",
+        hotel : "No hotel",
         components: [
           // {
-          //   id: 100,
-          //   name: "material ui"
-          // },
-          // {
-          //   id: 200,
-          //   name: "bootstrap"
-          // },
-        ]
-      },
-      {
-        id: 1,
-        title: "Day 1",
+            //   id: 100,
+            //   name: "material ui"
+            // },
+            // {
+              //   id: 200,
+              //   name: "bootstrap"
+              // },
+            ]
+          },
+          {
+            id: 1,
+            title: "Day 1",
+            hotel : "No hotel Selected",
+            components: [
+              // {
+                //   id: 300,
+                //   name: "react"
+                // },
+                // {
+                  //   id: 400,
+                  //   name: "node"
+                  // },
+                ]
+              },
+              {
+                id: 2,
+                title: "Day 2",
+                hotel : "No hotel Selected",
         components: [
-          // {
-          //   id: 300,
-          //   name: "react"
-          // },
-          // {
-          //   id: 400,
-          //   name: "node"
-          // },
-        ]
-      },
-      {
-        id: 2,
-        title: "Day 2",
-        components: [
-          // {
-          //   id: 500,
-          //   name: "redux"
-          // },
-          // {
-          //   id: 600,
-          //   name: "recoil"
-          // },
+
         ]
       }
     ]
       setData(cardsData);
   }, []); 
-
-  // const AiAutomate = () => {
-  //   const datatosent = data; 
-  //   const extractRequiredKeys = (data) => {
-  //     return data.map(place => ({
-  //       id: place.id,
-  //       title: place.title,
-  //       components: place.components.map(component => ({
-  //         id: component.id,
-  //         displayName: component.displayName,
-  //         location: component.location
-  //       }))
-  //     }));
-  //   };
-    
-  //   const filteredData = extractRequiredKeys(datatosent);
-  //   let newData = [];
-    
-  //   console.log(filteredData);
-    
-  //   async function fetchData() {
-  //     const maxAttempts = 1;
-  //     let attempts = 0;
-  //     let validResponse = false;
-    
-  //     while (attempts < maxAttempts && !validResponse) {
-  //       attempts++;
-  //       try {
-  //         const response = await axios.post('http://192.168.0.13:5000/generate-itinerary', {
-  //           message: filteredData
-  //         });
-    
-  //         // Check if the response data is valid JSON
-  //         try {
-  //           setData(response.data);
-  //           validResponse = true; // Set flag to true if parsing is successful
-  //         } catch (parseError) {
-  //           console.error(`Attempt ${attempts}: Received invalid JSON response`);
-  //         }
-  //       } catch (error) {
-  //         console.error(`Attempt ${attempts}: ${error.message}`);
-  //       }
-  //     }
-    
-  //     if (!validResponse) {
-  //       console.error("Failed to receive valid JSON response after 3 attempts.");
-  //     }
-  //   }
-    
-  //   fetchData();
-    
-  // }
-
-
 
   const AiAutomate = () => {
     const datatosent = data;
@@ -135,6 +74,11 @@ const Map = () => {
       return data.map(place => ({
         id: place.id,
         title: place.title,
+        hotel: typeof place.hotel === 'object' ? {
+          id: place.hotel.id,
+          displayName: place.hotel.displayName,
+          location: place.hotel.location
+        } : place.hotel, 
         components: place.components.map(component => ({
           id: component.id,
           displayName: component.displayName,
@@ -169,7 +113,7 @@ const Map = () => {
           originalMap.set(newPlace.id, newPlace);
         }
       });
-  
+      
       return Array.from(originalMap.values());
     };
   
@@ -190,6 +134,11 @@ const Map = () => {
           const responseData = response.data;
           console.log({responseData});
 
+          if( "final_array_of_items" in responseData){
+            newData = responseData.final_array_of_items;
+            setData(newData);
+            return;
+          }
 
           try {
             if (Array.isArray(responseData)) {
@@ -224,18 +173,44 @@ const Map = () => {
   
     fetchData();
   }
-  
+  function getNextValue() {
+  let ans = counter;
+    setCounter((counter % 2) + 1);
+
+    return ans;
+  }
 
 
-
+  // const addHotel = () => {
+  //   const newComponent = selectedHotel.Eg;
+  //   const newObject = {
+  //     ...newComponent,
+  //     name: newComponent.displayName,
+  //   }
+  //   console.log({newComponent})
+  //   setData(prevData =>
+  //     prevData.map(card =>
+  //       card.id === getNextValue()
+  //         ? { ...card, hotel: newObject }
+  //         : card
+  //     )
+  //   );
+  // }
 
 
   const addPlan = () => {
     const newComponent = selectedPlace.Eg;
-
         const newObject = {
       ...newComponent,
       name: newComponent.displayName,
+    }
+    if(newComponent.types.includes("lodging")){
+      console.log("comming")
+      let x= getNextValue();
+      setData(prevData =>
+        prevData.map(card => (card.id == x ? { ...card, hotel: newObject } : card))
+      );
+      return;
     }
     setData(prevData =>
       prevData.map(card => 
@@ -302,6 +277,9 @@ const Map = () => {
             ListPlaces={data}
             setSelectedPlace={setSelectedPlace}
             dirId={dirId}
+            hotels={hotels}
+            setHotels={setHotels}
+            setSelectedHotel={setSelectedHotel}
           />
         </div>
       </div>

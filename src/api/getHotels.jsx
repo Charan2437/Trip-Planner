@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import Script from "next/script";
 
-    export default async function getPlaces({bounds}) {
+    export default async function getHotels({bounds}) {
 
         const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary(
             "places",
@@ -13,32 +13,29 @@ import Script from "next/script";
             lng: (bounds.west + bounds.east) / 2,
           };
     const request = {
-        fields: ["displayName", "location", "businessStatus","photos","priceLevel","rating","userRatingCount","websiteURI","hasWiFi","editorialSummary","types"],
+        fields: ["displayName", "location", "businessStatus","photos","priceLevel","rating","userRatingCount","websiteURI","hasWiFi","editorialSummary","servesBreakfast","servesLunch","servesDinner","hasDineIn","servesVegetarianFood","types"],
         locationRestriction: {
             center: center,
             radius: 5000,
         },
         includedPrimaryTypes : [
-            "amusement_center",
-            "amusement_park",
-            "aquarium",
-            "bowling_alley",
-            "casino",
-            "cultural_center",
-            "dog_park",
-            "hiking_area",
-            "historical_landmark",
-            "marina",
-            "movie_theater",
-            "national_park",
-            "night_club",
-            "park",
-            "tourist_attraction",
-            "visitor_center",
-            "zoo"
+            "bed_and_breakfast",
+            "campground",
+            "camping_cabin",
+            "cottage",
+            "extended_stay_hotel",
+            "farmstay",
+            "guest_house",
+            "hostel",
+            "hotel",
+            "lodging",
+            "motel",
+            "private_guest_room",
+            "resort_hotel",
+            "rv_park"
           ],
           
-        maxResultCount: 2,
+        maxResultCount: 4,
         rankPreference: SearchNearbyRankPreference.POPULARITY,
         language: "en-US",
         region: "us",
@@ -46,8 +43,6 @@ import Script from "next/script";
 
     try {
         const { places } = await Place.searchNearby(request);
-        console.log("API called");
-        console.log({ places })
         return places;
     } catch (error) {
         console.error(error);
