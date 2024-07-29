@@ -23,6 +23,8 @@ const Map = () => {
   const [dirId,setDirId]=useState(0);
   const [counter, setCounter] = useState(1);
   const [hotels,setHotels]=useState([]);
+
+  use
   useEffect(() => {
     const cardsData = [
       {
