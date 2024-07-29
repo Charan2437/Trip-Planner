@@ -3,7 +3,6 @@
 import React, { useEffect,useState } from 'react';
 import styles from './map.module.css';
 import 'tailwindcss/tailwind.css';
-import axios from 'axios';
 import MapComponent from './map';
 import GoogleMapReact from "google-map-react";
 // import App from '@/app/(dnd)/dnd/page';
@@ -11,7 +10,8 @@ import { lerp } from 'three/src/math/MathUtils.js';
 import { root } from 'postcss';
 import { useItemsStore } from '@/store/placeitems';
 import DragDrop from '@/app/(dnd)/dnd/page';
-
+import axios from 'axios';
+import { Herr_Von_Muellerhoff } from 'next/font/google';
 
 const Map = () => {
 
@@ -73,6 +73,161 @@ const Map = () => {
     ]
       setData(cardsData);
   }, []); 
+
+  // const AiAutomate = () => {
+  //   const datatosent = data; 
+  //   const extractRequiredKeys = (data) => {
+  //     return data.map(place => ({
+  //       id: place.id,
+  //       title: place.title,
+  //       components: place.components.map(component => ({
+  //         id: component.id,
+  //         displayName: component.displayName,
+  //         location: component.location
+  //       }))
+  //     }));
+  //   };
+    
+  //   const filteredData = extractRequiredKeys(datatosent);
+  //   let newData = [];
+    
+  //   console.log(filteredData);
+    
+  //   async function fetchData() {
+  //     const maxAttempts = 1;
+  //     let attempts = 0;
+  //     let validResponse = false;
+    
+  //     while (attempts < maxAttempts && !validResponse) {
+  //       attempts++;
+  //       try {
+  //         const response = await axios.post('http://192.168.0.13:5000/generate-itinerary', {
+  //           message: filteredData
+  //         });
+    
+  //         // Check if the response data is valid JSON
+  //         try {
+  //           setData(response.data);
+  //           validResponse = true; // Set flag to true if parsing is successful
+  //         } catch (parseError) {
+  //           console.error(`Attempt ${attempts}: Received invalid JSON response`);
+  //         }
+  //       } catch (error) {
+  //         console.error(`Attempt ${attempts}: ${error.message}`);
+  //       }
+  //     }
+    
+  //     if (!validResponse) {
+  //       console.error("Failed to receive valid JSON response after 3 attempts.");
+  //     }
+  //   }
+    
+  //   fetchData();
+    
+  // }
+
+
+
+  const AiAutomate = () => {
+    const datatosent = data;
+  
+    const extractRequiredKeys = (data) => {
+      return data.map(place => ({
+        id: place.id,
+        title: place.title,
+        components: place.components.map(component => ({
+          id: component.id,
+          displayName: component.displayName,
+          location: component.location
+        }))
+      }));
+    };
+    const createPlaceMap = (data) => {
+      const placeMap = new Map();
+      data.forEach(place => {
+        placeMap.set(place.id, place);
+      });
+      return placeMap;
+    };
+  
+    const mergeData = (originalMap, newData) => {
+      newData.forEach(newPlace => {
+        if (originalMap.has(newPlace.id)) {
+          const originalPlace = originalMap.get(newPlace.id);
+          newPlace.components.forEach(newComponent => {
+            const existingComponentIndex = originalPlace.components.findIndex(comp => comp.id === newComponent.id);
+            if (existingComponentIndex !== -1) {
+              originalPlace.components[existingComponentIndex] = {
+                ...originalPlace.components[existingComponentIndex],
+                ...newComponent
+              };
+            } else {
+              originalPlace.components.push(newComponent);
+            }
+          });
+        } else {
+          originalMap.set(newPlace.id, newPlace);
+        }
+      });
+  
+      return Array.from(originalMap.values());
+    };
+  
+  
+    const filteredData = extractRequiredKeys(datatosent);
+    let newData = [];
+  
+    console.log(filteredData);
+  
+    async function fetchData() {
+      const maxAttempts = 1;
+      let attempts = 0;
+  
+        try {
+          const response = await axios.post('http://192.168.0.13:5000/generate-itinerary', {
+            message: filteredData
+          });
+          const responseData = response.data;
+          console.log({responseData});
+
+
+          try {
+            if (Array.isArray(responseData)) {
+              console.log("Parsed as JSON array:", responseData);
+              setData(responseData);
+            } else {
+              throw new Error("Data is not an array");
+            }
+          } catch (e) {
+          try {
+            // Wrap the string with square brackets
+            let wrappedResponseDataString;
+            if(responseData[0]!='[') wrappedResponseDataString= `[${responseData}]`;
+            else wrappedResponseDataString=responseData;
+          
+            // Parse the resulting JSON string
+            const parsedArray = JSON.parse(wrappedResponseDataString);
+          
+            console.log({parsedArray});
+            setData(parsedArray);
+          } catch (error) {
+            console.error("Error parsing JSON:", error);
+          }
+          
+        }
+        } catch (error) {
+          console.error(`Attempt ${attempts}: ${error.message}`);
+        }
+      }
+  
+    // }
+  
+    fetchData();
+  }
+  
+
+
+
 
 
   const addPlan = () => {
@@ -172,7 +327,7 @@ const Map = () => {
         {/* setItems={setItems} */}
         {/* days={3}  */}
       {/* /> */}
-
+      <button onClick={AiAutomate} >Ai Automate</button>
     </div>
   );
 };

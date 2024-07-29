@@ -8,6 +8,7 @@ import { DndContext } from "@/context/DndContext";
 interface Component {
     id: number;
     name: string;
+    displayName: string;
     [key: string]: any; // This allows for additional fields
 }
 interface Cards {
@@ -16,12 +17,14 @@ interface Cards {
     components: {
         id: number;
         name: string;
+        displayName: string;
     }[];
 }
 const DndExample = ({ CardsData, setCardsData,setDirId }: { CardsData: Cards[]; setCardsData: (cards: Cards[]) => void;  setDirId: React.Dispatch<React.SetStateAction<number>>; // More accurate type for setDirId
 }) => {
     // const cardsData= CardsData ;
         // const [data, setData] = useState<Cards[] | []>([])
+        console.log({CardsData})
         const onDragEnd = (result: DropResult) => {
             const { source, destination } = result;
             if (!destination) return;
@@ -74,7 +77,7 @@ const DndExample = ({ CardsData, setCardsData,setDirId }: { CardsData: Cards[]; 
                                                                     {...provided.dragHandleProps}
                                                                     {...provided.draggableProps}
                                                                     ref={provided.innerRef}
-                                                                >{component.name}</div>
+                                                                >{component.name || component?.displayName }</div>
                                                             )
                                                         }
                                                     </Draggable>
