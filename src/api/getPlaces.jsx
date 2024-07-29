@@ -16,7 +16,7 @@ import Script from "next/script";
         fields: ["displayName", "location", "businessStatus","photos","priceLevel","rating","userRatingCount","websiteURI","hasWiFi","editorialSummary","types"],
         locationRestriction: {
             center: center,
-            radius: 5000,
+            radius: 20000,
         },
         includedPrimaryTypes : [
             "amusement_center",
@@ -24,18 +24,19 @@ import Script from "next/script";
             "aquarium",
             "bowling_alley",
             "casino",
-            "cultural_center",
             "dog_park",
             "hiking_area",
             "historical_landmark",
             "marina",
-            "movie_theater",
             "national_park",
             "night_club",
             "park",
             "tourist_attraction",
             "visitor_center",
-            "zoo"
+            "art_gallery",
+            "hindu_temple",
+            "mosque",
+            "zoo",
           ],
           
         maxResultCount: 2,

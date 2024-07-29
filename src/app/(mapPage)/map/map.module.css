@@ -29,3 +29,42 @@
     transform: translateY(-10px) scale(1.05);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   }
+  .itineraryContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Adds space between items */
+  }
+  
+  .itineraryItem {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid white;
+    position: relative;
+    color: black;
+    height: 10rem;
+    margin-bottom: 1rem;
+  }
+  
+  .itineraryItemTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .itineraryItemComponent {
+    margin-bottom: 0.5rem;
+  }
+  
+  .itineraryItemActions {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .itineraryItemLink {
+    color: #3b82f6; /* Tailwind's blue-500 */
+  }
