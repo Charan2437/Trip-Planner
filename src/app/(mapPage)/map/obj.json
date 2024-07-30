@@ -1,0 +1,148 @@
+{
+    "final_array_of_items": [
+        {
+            "id": 0,
+            "title": "Unplanned Places",
+            "components": [
+                {
+                    "id": "ChIJnfoIwMaXyzsRWySGfUS7cXs",
+                    "displayName": "Nehru Zoological Park Hyderabad",
+                    "location": {
+                        "lat": 17.3507805,
+                        "lng": 78.4514829
+                    },
+                    "priceLevel": null,
+                    "rating": 4.4,
+                    "userRatingCount": 10000,
+                    "description": "Explore diverse wildlife at this zoo."
+                },
+                {
+                    "id": "ChIJa-KqQhmYyzsRlR5TY6QdAWo",
+                    "displayName": "Sri Peddamma Talli Temple",
+                    "location": {
+                        "lat": 17.430588,
+                        "lng": 78.4049288
+                    },
+                    "priceLevel": null,
+                    "rating": 4.6,
+                    "userRatingCount": 5000,
+                    "description": "A prominent Hindu temple dedicated to Goddess Peddamma Talli."
+                },
+                {
+                    "id": "ChIJ4fcxtsGQyzsRX3bPrAUcCbg",
+                    "displayName": "Shri Yellamma Pochamma Temple",
+                    "location": {
+                        "lat": 17.4474621,
+                        "lng": 78.4491601
+                    },
+                    "priceLevel": null,
+                    "rating": 4.3,
+                    "userRatingCount": 3000,
+                    "description": "A revered temple dedicated to Yellamma and Pochamma, Hindu goddesses."
+                },
+                {
+                    "id": "ChIJpeyxLF-XyzsRXBhk5vcfEmU",
+                    "displayName": "Lumbini Park",
+                    "location": {
+                        "lat": 17.4096811,
+                        "lng": 78.4724344
+                    },
+                    "priceLevel": null,
+                    "rating": 4.2,
+                    "userRatingCount": 2000,
+                    "description": "A popular park with a musical fountain and boating facilities."
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "title": "Day 1: Explore City & Luxury Stay",
+            "description": "Start your day with a visit to the **Nehru Zoological Park Hyderabad (ID: ChIJnfoIwMaXyzsRWySGfUS7cXs)**, home to diverse wildlife.  After lunch, head to the **Sri Peddamma Talli Temple (ID: ChIJa-KqQhmYyzsRlR5TY6QdAWo)** to experience its spiritual aura.  Check into the **Hyderabad Marriott Hotel & Convention Centre (ID: ChIJgeE2cPeZyzsRW4Yql-JFFkk)** for a luxurious stay.",
+            "budget_estimate": 8000,
+            "hotel": "Hyderabad Marriott Hotel & Convention Centre",
+            "components": [
+                {
+                    "id": "ChIJnfoIwMaXyzsRWySGfUS7cXs",
+                    "displayName": "Nehru Zoological Park Hyderabad",
+                    "location": {
+                        "lat": 17.3507805,
+                        "lng": 78.4514829
+                    },
+                    "priceLevel": null,
+                    "rating": 4.4,
+                    "userRatingCount": 10000,
+                    "description": "Explore diverse wildlife at this zoo."
+                },
+                {
+                    "id": "ChIJa-KqQhmYyzsRlR5TY6QdAWo",
+                    "displayName": "Sri Peddamma Talli Temple",
+                    "location": {
+                        "lat": 17.430588,
+                        "lng": 78.4049288
+                    },
+                    "priceLevel": null,
+                    "rating": 4.6,
+                    "userRatingCount": 5000,
+                    "description": "A prominent Hindu temple dedicated to Goddess Peddamma Talli."
+                },
+                {
+                    "id": "ChIJgeE2cPeZyzsRW4Yql-JFFkk",
+                    "displayName": "Hyderabad Marriott Hotel & Convention Centre",
+                    "location": {
+                        "lat": 17.4242848,
+                        "lng": 78.4871452
+                    },
+                    "priceLevel": null,
+                    "rating": 4.5,
+                    "userRatingCount": 8000,
+                    "description": "A luxurious hotel offering comfortable accommodations and amenities."
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "title": "Day 2:  Temple Visit and City Exploration",
+            "description": "Visit the **Shri Yellamma Pochamma Temple (ID: ChIJ4fcxtsGQyzsRX3bPrAUcCbg)** for a spiritual experience. After lunch, explore the serene **Lumbini Park (ID: ChIJpeyxLF-XyzsRXBhk5vcfEmU)**, enjoying a relaxing walk and the musical fountain.  Check into **THE PARK HYDERABAD (ID: ChIJS_vvpBSXyzsR40GrdQo2a6Y)** for a comfortable stay.",
+            "budget_estimate": 5000,
+            "hotel": "THE PARK HYDERABAD",
+            "components": [
+                {
+                    "id": "ChIJ4fcxtsGQyzsRX3bPrAUcCbg",
+                    "displayName": "Shri Yellamma Pochamma Temple",
+                    "location": {
+                        "lat": 17.4474621,
+                        "lng": 78.4491601
+                    },
+                    "priceLevel": null,
+                    "rating": 4.3,
+                    "userRatingCount": 3000,
+                    "description": "A revered temple dedicated to Yellamma and Pochamma, Hindu goddesses."
+                },
+                {
+                    "id": "ChIJpeyxLF-XyzsRXBhk5vcfEmU",
+                    "displayName": "Lumbini Park",
+                    "location": {
+                        "lat": 17.4096811,
+                        "lng": 78.4724344
+                    },
+                    "priceLevel": null,
+                    "rating": 4.2,
+                    "userRatingCount": 2000,
+                    "description": "A popular park with a musical fountain and boating facilities."
+                },
+                {
+                    "id": "ChIJS_vvpBSXyzsR40GrdQo2a6Y",
+                    "displayName": "THE PARK HYDERABAD",
+                    "location": {
+                        "lat": 17.4234823,
+                        "lng": 78.4623153
+                    },
+                    "priceLevel": null,
+                    "rating": 4.4,
+                    "userRatingCount": 7000,
+                    "description": "A contemporary hotel offering modern amenities and a central location."
+                }
+            ]
+        }
+    ]
+}

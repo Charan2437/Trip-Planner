@@ -6,6 +6,8 @@ import { GoogleMap, useLoadScript, Marker,InfoWindow } from '@react-google-maps/
 import getPlaces from '../../../api/getPlaces';
 import mapStyles from "./styles";
 import { Polyline } from "@react-google-maps/api";
+import getHotels from '@/api/getHotels';
+
 
 const libraries = ['places'];
 const mapContainerStyle = {
@@ -22,13 +24,14 @@ const options = {
   zoomControl: true,
 };
 
-const MapComponent = ({setSelectedPlace, ListPlaces,dirId}) => {
+const MapComponent = ({setSelectedPlace, ListPlaces,dirId,hotels,setHotels}) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries,
   });
   const [places, setPlaces] = useState([]);
   const [mapRef, setMapRef] = useState(null);
+  const [showHotels , setShowHotels] = useState(false);
   const [mapInstance, setMapInstance] = useState(null);
   const [mapsApi, setMapsApi] = useState(null);
   const [directionsRenderer, setDirectionsRenderer] = useState(null);
@@ -54,7 +57,6 @@ const MapComponent = ({setSelectedPlace, ListPlaces,dirId}) => {
   }
 
   useEffect(()=>{
-    console.log(dirId,"from map")
     RenderHelper()
   },[dirId])
 
@@ -130,10 +132,60 @@ const MapComponent = ({setSelectedPlace, ListPlaces,dirId}) => {
     } catch (error) {
       console.error("Error fetching places:", error);
     }
+
+  };
+  
+  const fetchHotels = async () => {
+    if(hotels.length > 0){
+      setShowHotels(!showHotels);
+    }
+
+    try {
+      const bounds = mapRef.getBounds().toJSON();
+      console.log("getHotels called : ")
+      const response = await getHotels({ bounds, place: "restaurants" });
+      console.log(response)
+      let p= !showHotels;
+      setShowHotels(p);
+      setHotels(response);
+    } catch (error) {
+      console.error("Error fetching places:", error);
+    }
   };
 
   if (loadError) return "Error loading maps";
   if (!isLoaded) return "Loading Maps";
+  const blueIcon = {
+    url: 'https://cdn-icons-png.flaticon.com/128/7987/7987463.png',
+    scaledSize: new google.maps.Size(40, 40),
+  };
+  const redIcon = {
+    url: 'https://cdn-icons-png.flaticon.com/128/14090/14090313.png',
+    scaledSize: new google.maps.Size(40, 40),
+  };
+  const greenIcon = {
+    url: 'https://cdn-icons-png.flaticon.com/128/14090/14090489.png',
+    scaledSize: new google.maps.Size(40, 40),
+  };
+  const yellowIcon = {
+    url: 'https://cdn-icons-png.flaticon.com/128/8065/8065913.png',
+    scaledSize: new google.maps.Size(40, 40),
+  };
+
+  function getColorByTypes(types) {
+    // Check if 'park' is one of the types in the array
+    console.log({types})
+    const hasPark = types.some(type => type === 'park');
+  
+    if (hasPark) {
+      return greenIcon; // Return 'green' if any of the types is 'park'
+    } else {
+      // If no type is 'park', check for 'holy place' or default to 'red'
+      const hasHolyPlace = types.some(type => type === 'place_of_worship');
+      return hasHolyPlace ? yellowIcon : redIcon;
+    }
+  }
+
 
   return (
     <>
@@ -144,9 +196,43 @@ const MapComponent = ({setSelectedPlace, ListPlaces,dirId}) => {
         options={options}
         onLoad={onMapLoad}
       >
-        {places.map((place, i) => (
+
+{showHotels && hotels.map((hotel, i) => (
           <Marker
             key={i}
+            icon={blueIcon} // Use blue icon for hotels
+            width="10px"
+            position={{
+              lat: parseFloat(hotel.Eg.location.lat),
+              lng: parseFloat(hotel.Eg.location.lng),
+            }}
+            onMouseOver={() => setHoveredPlace(hotel)} // Set hovered place on hover
+            onMouseOut={() => setHoveredPlace(null)} 
+              // Clear hovered place on mouse out
+            onClick={() => setSelectedPlace(hotel)}    // Set selected place on click
+          >
+            {(hoveredPlace === hotel ) && (
+              <InfoWindow
+                position={{
+                  lat: parseFloat(hotel.Eg.location.lat),
+                  lng: parseFloat(hotel.Eg.location.lng),
+                }}
+                onCloseClick={() => setSelectedPlace(null)} // Close info window on click
+              >
+                <div style={{ color: 'black' }}>
+                  <h2>{hotel.Eg.displayName}</h2> {/* Display place name */}
+                  <p><strong>Status:</strong> {hotel.businessStatus}</p> {/* Business Status */}
+                  <p><strong>Rating:</strong> {hotel.rating} ({hotel.userRatingCount} ratings)</p> {/* Rating and User Rating Count */}
+                </div>
+              </InfoWindow>
+            )}
+          </Marker>
+        ))}
+
+        {!showHotels && places.map((place, i) => (
+          <Marker
+            key={i}
+            icon={getColorByTypes(place.Eg.types)} // Use red icon for restaurants
             position={{
               lat: parseFloat(place.Eg.location.lat),
               lng: parseFloat(place.Eg.location.lng),
@@ -180,8 +266,19 @@ const MapComponent = ({setSelectedPlace, ListPlaces,dirId}) => {
         <br />
         <button variant="contained" sx={{marginBottom : "10px"}} onClick={()=>DirectionStop() } >Remove Directions</button>
       </div>
+      <button onClick={fetchHotels}> Hotels Display</button>
     </>
   );
 };
 
 export default MapComponent;
+
+
+// temple icon - <a href="https://www.flaticon.com/free-icons/religion" title="religion icons">Religion icons created by Freepik - Flaticon</a>
+// hotel icon -<a href="https://www.flaticon.com/free-icons/empire-state-building" title="empire state building icons">Empire state building icons created by Muhammad Bagus Wicaksono - Flaticon</a>
+// hotel - <a href="https://www.flaticon.com/free-icons/maps-and-location" title="maps and location icons">Maps and location icons created by asol_studio - Flaticon</a>
+
+// blue marker <a href="https://www.flaticon.com/free-icons/location-pin" title="location pin icons">Location pin icons created by Talha Dogar - Flaticon</a>
+// red marker <a href="https://www.flaticon.com/free-icons/red" title="red icons">Red icons created by hqrloveq - Flaticon</a>
+// gold marker <a href="https://www.flaticon.com/free-icons/location-pin" title="location pin icons">Location pin icons created by Senapedia - Flaticon</a>
+// green marker <a href="https://www.flaticon.com/free-icons/1" title="1 icons">1 icons created by hqrloveq - Flaticon</a>
