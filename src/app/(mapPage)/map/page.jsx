@@ -9,6 +9,7 @@
   import { lerp } from 'three/src/math/MathUtils.js';
   import { root } from 'postcss';
   import { useItemsStore } from '@/store/placeitems';
+  import { useRouter } from 'next/navigation';
   import DragDrop from '@/app/(dnd)/dnd/page';
   import axios from 'axios';
   import { Herr_Von_Muellerhoff } from 'next/font/google';
@@ -22,7 +23,7 @@
 
 
   const Map = () => {
-    
+    const router = useRouter();
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [data, setData] = useState([]);
@@ -330,8 +331,16 @@
           </div>
         );
       };
-    
-    
+      const handleDownloadPdf = () => {
+        console.log({data})
+        // Ensure data is defined and is an object
+        if (data) {
+          router.push(`/pdf_download?data=${encodeURIComponent(JSON.stringify(data))}`);
+
+        } else {
+          console.error('Data is not defined');
+        }
+      };
       const renderContent = () => {
         switch (selectedTab) {
           case 'about':
@@ -433,6 +442,7 @@
 
     <button onClick={AiAutomate} >Ai Automate</button>
     <button onClick={SaveTrip}>Save Trip</button>
+    <button onClick={handleDownloadPdf}>Download Pdf</button>
     </>
     );
   };

@@ -39,7 +39,7 @@ import Script from "next/script";
             "zoo",
           ],
           
-        maxResultCount: 2,
+        maxResultCount:  2,
         rankPreference: SearchNearbyRankPreference.POPULARITY,
         language: "en-US",
         region: "us",

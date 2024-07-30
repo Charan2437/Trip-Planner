@@ -77,7 +77,7 @@ const DndExample = ({ CardsData, setCardsData,setDirId }: { CardsData: Cards[]; 
 
                                             {
                                                 val.components?.map((component, index) => (
-                                                    <Draggable key={component.id} draggableId={component.id.toString()} index={index}>
+                                                    <Draggable key={component.id} draggableId={component.id?.toString()} index={index}>
                                                         {
                                                             (provided) => (
                                                                 <div className="bg-gray-200 mx-1 px-4 py-3 my-3"
