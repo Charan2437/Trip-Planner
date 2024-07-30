@@ -23,10 +23,26 @@ const TestEndpoint = () => {
     useEffect(() => {
         const fetchData = async () => {
             setData(foods_items);
+            setLoading(true);
+            setError(null);
+            try {
+                const response = await axios.post('http://127.0.0.1:5000/generate-suggestions', {
+                    input_text: "ooty",
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                setData(response.data);
+            } catch (err) {
+                setError(err.message);
+            }
+            setLoading(false);
         };
 
         fetchData();
     }, []);
+
 
     const handleDownload = async () => {
         const html2pdf = (await import('html2pdf.js')).default;

@@ -58,14 +58,15 @@ const DndExample = ({ CardsData, setCardsData,setDirId }: { CardsData: Cards[]; 
     return (
         <DndContext onDragEnd={onDragEnd}>
             <h1 className="text-center mt-8 mb-3 font-bold text-[25px] ">Drag and Drop Application</h1>
-            <div className="flex gap-4 justify-between my-20 mx-4 flex-col lg:flex-row">
+            <div className="flex gap-4 justify-between my-20 mx-4 flex-wrap overflow-y-auto">        
                 {
                     CardsData.map((val, index) => {
                         return (
+
                             <Droppable key={index} droppableId={`droppable${index}`}>
                                 {
                                     (provided) => (
-                                        <div className="p-5 lg:w-1/3 w-full bg-white  border-gray-400 border border-dashed"
+                                        <div className="p-5 w-[250px] w-full bg-white overflow-y-auto  border-gray-400 border border-dashed"
                                             {...provided.droppableProps}
                                             ref={provided.innerRef}
                                         >

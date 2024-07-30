@@ -10,6 +10,8 @@ CORS(app)
 def hello():
     return jsonify({"message": "Hello, World!"})
 
+
+
 @app.route("/api/user")
 def return_home():
     return jsonify({"message": "Welcome to the home page!"})

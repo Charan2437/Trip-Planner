@@ -9,7 +9,7 @@
   import { lerp } from 'three/src/math/MathUtils.js';
   import { root } from 'postcss';
   import { useItemsStore } from '@/store/placeitems';
-  import { useRouter } from 'next/navigation';
+  import { useRouter,useSearchParams } from 'next/navigation';
   import DragDrop from '@/app/(dnd)/dnd/page';
   import axios from 'axios';
   import { Herr_Von_Muellerhoff } from 'next/font/google';
@@ -20,7 +20,13 @@
   import {arrayUnion, query, where, getDocs,updateDoc } from "firebase/firestore";
   import { collection } from "firebase/firestore";
   import { FaMapMarkerAlt } from 'react-icons/fa';
-
+  import {
+    Accordion,
+    AccordionItem,
+    AccordionItemButton,
+    AccordionItemHeading,
+    AccordionItemPanel,
+} from 'react-accessible-accordion';
 
   const Map = () => {
     const router = useRouter();
@@ -32,54 +38,104 @@
     const [hotels,setHotels]=useState([]);
     const [selectedTab, setSelectedTab] = useState('about');
     const [tripData , setTripData] = useState();
-
-    useEffect(()=>{
-
-    },[data]);
+    const [formData,setFormData] = useState();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
-      const cardsData = [
-        {
-          id: 0,
-          title: "All_Places",
-          hotel : "No hotel",
-          components: [
-            // {
-              //   id: 100,
-              //   name: "material ui"
-              // },
-              // {
-                //   id: 200,
-                //   name: "bootstrap"
-                // },
-              ]
-            },
-            {
-              id: 1,
-              title: "Day 1",
-              hotel : "No hotel Selected",
-              components: [
-                // {
-                  //   id: 300,
-                  //   name: "react"
-                  // },
-                  // {
-                    //   id: 400,
-                    //   name: "node"
-                    // },
-                  ]
-                },
-                {
-                  id: 2,
-                  title: "Day 2",
-                  hotel : "No hotel Selected",
-          components: [
+        const dataParam = searchParams.get('data');
+            setFormData(JSON.parse(dataParam));
+            
+            const calculateDaysInclusive = (startDate, endDate) => {
+              const start = new Date(startDate);
+              const end = new Date(endDate);
+              const timeDifference = end.getTime() - start.getTime();
+              return Math.ceil(timeDifference / (1000 * 3600 * 24)) + 1;
+            };
+        
+            if (formData) {
+              const startDate = formData.startDate; // Replace with your actual start date key
+              const endDate = formData.endDate; // Replace with your actual end date key
+              console.log("cams")
+              if (startDate && endDate) {
+                const numberOfDaysInclusive = calculateDaysInclusive(startDate, endDate);
+                setFormData(prevFormData => ({
+                  ...prevFormData,
+                  days: numberOfDaysInclusive,
+                }));
+                console.log(`Number of days inclusive: ${numberOfDaysInclusive}`);
+              }
+            }
 
-          ]
+            console.log(formData)
+    }, [searchParams]);
+    
+
+
+    useEffect(() => {
+      // const cardsData = [
+      //   {
+      //     id: 0,
+      //     title: "All_Places",
+      //     hotel : "No hotel",
+      //     components: [
+      //       // {
+      //         //   id: 100,
+      //         //   name: "material ui"
+      //         // },
+      //         // {
+      //           //   id: 200,
+      //           //   name: "bootstrap"
+      //           // },
+      //         ]
+      //       },
+      //       {
+      //         id: 1,
+      //         title: "Day 1",
+      //         hotel : "No hotel Selected",
+      //         components: [
+      //           // {
+      //             //   id: 300,
+      //             //   name: "react"
+      //             // },
+      //             // {
+      //               //   id: 400,
+      //               //   name: "node"
+      //               // },
+      //             ]
+      //           },
+      //           {
+      //             id: 2,
+      //             title: "Day 2",
+      //             hotel : "No hotel Selected",
+      //     components: [
+
+      //     ]
+      //   }
+      // ]
+      const generateCardsData = (days) => {
+        const cards = [
+          {
+            id: 0,
+            title: "All_Places",
+            hotel: "No hotel",
+            components: [],
+          },
+        ];
+        for (let i = 1; i <= days; i++) {
+          cards.push({
+            id: i,
+            title: `Day ${i}`,
+            hotel: `Hotel ${i}`,
+            components: [],
+          });
         }
-      ]
-        setData(cardsData);
-    }, []); 
+        return cards;
+      };
+      let days= formData?.days ?? 1;
+      const newCardsData = generateCardsData(days);
+      setData(newCardsData);
+      console.log(newCardsData)
+    }, [formData]); 
 
     const AiAutomate = () => {
       const datatosent = data;
@@ -135,7 +191,6 @@
       const filteredData = extractRequiredKeys(datatosent);
       let newData = [];
     
-      console.log(filteredData);
     
       async function fetchData() {
         const maxAttempts = 1;
@@ -194,36 +249,12 @@
       return ans;
     }
 
-
-    // const addHotel = () => {
-    //   const newComponent = selectedHotel.Eg;
-    //   const newObject = {
-    //     ...newComponent,
-    //     name: newComponent.displayName,
-    //   }
-    //   console.log({newComponent})
-    //   setData(prevData =>
-    //     prevData.map(card =>
-    //       card.id === getNextValue()
-    //         ? { ...card, hotel: newObject }
-    //         : card
-    //     )
-    //   );
-    // }
-
-    let formData = {
-      name : "aks",
-      destination : "vijayawada"
-    };
     const SaveTrip = async () => {
       try {
-        // Await the result of getUserInfo to ensure data is retrieved before proceeding
         const dataa = await getUserInfo();
     
-        // Extract uid from the retrieved data  
         const { uid } = dataa;
     
-        // Query Firestore to get the user's document
         const q = query(collection(db, "users"), where("uid", "==", uid));
         const querySnapshot = await getDocs(q);
     
@@ -231,22 +262,18 @@
           const docData = querySnapshot.docs[0].data();
           const docRef = doc(db, 'users', querySnapshot.docs[0].id);
     
-          // Prepare the object to be added to the trips array
           let obj = {
             formData: formData || "default value",
             data
           };
           console.log(obj)
     
-          // Update the user's document with the new trip information
           if (docData && Array.isArray(docData.trips)) {
-            // If trips is an array, update it with arrayUnion
             await updateDoc(docRef, {
               trips: arrayUnion(obj)
             });
             console.log("trip is addes")
           } else {
-            // If trips doesn't exist or isn't an array, initialize it as an empty array
             await updateDoc(docRef, {
               trips: [obj]
             });
@@ -267,7 +294,7 @@
           <div className="bg-white bg-opacity-20 p-4  rounded-lg shadow-md border border-white text-black space-y-4">
           <Leftcard selectedPlace={selectedPlace} />
           </div>
-          <div className="bg-white bg-opacity-20 p-4 h-20 rounded-lg shadow-md border border-white flex items-center text-black space-y-4">
+          {/* <div className="bg-white bg-opacity-20 p-4 h-20 rounded-lg shadow-md border border-white flex items-center text-black space-y-4">
             <FaMapMarkerAlt className="text-red-500 mr-2" />
             <h2 className="text-xl font-semibold mb-2">Hotels</h2>
           </div>
@@ -278,25 +305,9 @@
           <div className="bg-white bg-opacity-20 p-4 h-20 rounded-lg shadow-md border border-white flex items-center text-black space-y-4" >
             <FaMapMarkerAlt className="text-blue-500 mr-2" />
             <h2 className="text-xl font-semibold mb-2">Parks and Entertainments</h2>
-          </div>
+          </div> */}
         </div>
       );
-    
-      // const Itinerary = () => (
-      //   <div className="space-y-4">
-
-      //   {Array.from({ length: 3 }, (_, index) => (
-      //     <div key={index}  style={{ height: '10rem' }} className="bg-white bg-opacity-20 p-4 rounded-lg shadow-md border border-white relative text-black space-y-5 mb-4 h-200  ">
-      //       <h2 className="text-xl font-semibold mb-2">DAY {index + 1}</h2>
-            
-      //       <div className="absolute bottom-4 right-4 space-x-4">
-      //         <a href="#" className="text-blue-500">Show directions</a>
-      //         <a href="#" className="text-blue-500">Show more</a>
-      //       </div>
-      //     </div>
-      //   ))}
-      //   </div>
-      // );
     
       const TravelOptions = () => (
         <div className="p-4 bg-white bg-opacity-20 h-48 rounded-lg shadow-md border border-white text-black space-y-4">
@@ -306,31 +317,40 @@
       );
 
 
-      const Itinerary = () => {
+    
+    const Itinerary = () => {
         return (
-          <div className={styles.itineraryContainer}>
-            {data.slice(1).map((item) => (
-              <div key={item.id} className={styles.itineraryItem}>
-                <h2 className={styles.itineraryItemTitle}>{item.title}</h2>
-                <p>{item.description}</p>
-                <div>
-                  {item.components.map((component) => (
-                    <div key={component.id} className={styles.itineraryItemComponent}>
-                      <h3 className="text-lg font-semibold">{component.displayName}</h3>
-                      <p>{component.description}</p>
-                      <p>Rating: {component.rating} ({component.userRatingCount} reviews)</p>
-                    </div>
-                  ))}
-                </div>
-                <div className={styles.itineraryItemActions}>
-                  <a href="#" className={styles.itineraryItemLink}>Show directions</a>
-                  <a href="#" className={styles.itineraryItemLink}>Show more</a>
-                </div>
-              </div>
-            ))}
-          </div>
+            <div className={styles.itineraryContainer}>
+                <Accordion>
+                    {data.slice(1).map((item) => (
+                        <AccordionItem key={item.id}>
+                            <AccordionItemHeading>
+                                <AccordionItemButton className="p-4 mb-2 bg-gray-100">
+                                    {item.title}
+                                </AccordionItemButton>
+                            </AccordionItemHeading>
+                            <AccordionItemPanel className="p-4 bg-gray-50">
+                                <p>{item.description}</p>
+                                <div>
+                                    {item.components.map((component) => (
+                                        <div key={component.id} className={styles.itineraryItemComponent}>
+                                            <h3 className="text-lg font-semibold">{component.displayName}</h3>
+                                            <p>{component.description}</p>
+                                            <p>Rating: {component.rating} ({component.userRatingCount} reviews)</p>
+                                        </div>
+                                    ))}
+                                </div>
+                                <h1>
+                                  show Directions
+                                </h1>
+
+                            </AccordionItemPanel>
+                        </AccordionItem>
+                    ))}
+                </Accordion>
+            </div>
         );
-      };
+    };
       const handleDownloadPdf = () => {
         console.log({data})
         // Ensure data is defined and is an object
@@ -352,6 +372,30 @@
           default:
             return <About />;
         }
+      };
+
+      const genrateOptions= async( e )=>{
+          e.preventDefault();
+          let source = "hyderabad";
+          let destination = "kadapa";
+          try {
+            const response = await fetch('http://localhost:5000/generate-travel-options', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ source, destination }),
+            });
+      
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+      
+            const data = await response.json();
+            console.log({data})
+          } catch (error) {
+            console.log(error)
+          }
       };
 
     const addPlan = () => {
@@ -413,18 +457,18 @@
     return (
   <>
 <div className="flex h-screen bg-cover bg-fixed text-black">
-  <div className="w-3/7 h-full overflow-y-auto p-4">
+  <div className="w-2/5 h-full overflow-y-auto p-4">
     <div className="sticky top-0 bg-white bg-opacity-10 p-4 rounded-lg shadow-lg">
       {/* <img src="/path-to-your-image.jpg" alt="Header" className="w-full h-64 object-cover rounded-lg mb-4" /> */}
       <div className="flex justify-around mb-4">
-        <button onClick={() => setSelectedTab('about')} className={`p-4 rounded-full w-1/3 space-y-4 ${selectedTab === 'about' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} transition`}>About</button>
-        <button onClick={() => setSelectedTab('itinerary')} className={`p-4 rounded-full w-1/3 space-y-4 ${selectedTab === 'itinerary' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} transition`}>Itinerary</button>
-        <button onClick={() => setSelectedTab('travelOptions')} className={`p-4 rounded-full w-1/3 space-y-4 ${selectedTab === 'travelOptions' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} transition`}>Travel Options</button>
+        <button onClick={() => setSelectedTab('about')} className={`p-4  w-1/3 space-y-4 ${selectedTab === 'about' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} transition`}>About</button>
+        <button onClick={() => setSelectedTab('itinerary')} className={`p-4  w-1/3 space-y-4 ${selectedTab === 'itinerary' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} transition`}>Itinerary</button>
+        <button onClick={() => setSelectedTab('travelOptions')} className={`p-4  w-1/3 space-y-4 ${selectedTab === 'travelOptions' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} transition`}>Travel Options</button>
       </div>
       {renderContent()}
     </div>
   </div>
-  <div className="w-1/3 h-full p-4">
+  <div className="w-3/5 h-full p-4">
     {/* <div className="md:col-span-8 map bg-gray-700 rounded-lg shadow-md h-100"> */}
     <MapComponent
       ListPlaces={data}
@@ -436,13 +480,16 @@
     />
   </div>
   {/* </div> */}
+  <div className="w-2/5 h-full p-4 overflow-y-auto">
   <DragDrop CardsData={data} setCardsData={setData} setDirId={setDirId} />
+</div>
 </div>
 
 
     <button onClick={AiAutomate} >Ai Automate</button>
     <button onClick={SaveTrip}>Save Trip</button>
     <button onClick={handleDownloadPdf}>Download Pdf</button>
+    <button onClick={genrateOptions}>Generate Travel Options</button>
     </>
     );
   };
