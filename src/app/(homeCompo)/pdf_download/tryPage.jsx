@@ -1,31 +1,18 @@
-"use client";
+'use client';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import { useRouter,useSearchParams } from 'next/navigation';
-// import { foods_items } from "../../../data/plan";
+import { plan } from "../../../data/plan";
 import { ThreeDots } from 'react-loader-spinner';
 
 const TestEndpoint = () => {
-    const router = useRouter();
+    const [itineraryData, setItineraryData] = useState(null);
     const [foodsData, setFoodsData] = useState(null);
     const [itemsData, setItemsData] = useState(null);
+    const [loadingItinerary, setLoadingItinerary] = useState(false);
     const [loadingFoods, setLoadingFoods] = useState(false);
     const [loadingItems, setLoadingItems] = useState(false);
-    const [loadingItinerary, setLoadingItinerary] = useState(false);
-
-    // const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [plan,setPlan] = useState(null);
-    const searchParams = useSearchParams();
-
-    useEffect(() => {
-        const dataParam = searchParams.get('data');
-        if (dataParam) {
-            setPlan(JSON.parse(dataParam));
-        }
-    }, [searchParams]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,7 +28,7 @@ const TestEndpoint = () => {
                         'Content-Type': 'application/json',
                     },
                 });
-                // setPlan(plan.slice(1)); // Assuming the plan data doesn't require fetching
+                setItineraryData(plan.slice(1)); // Assuming the plan data doesn't require fetching
                 setFoodsData(response.data[0].foods);
                 setItemsData(response.data[1].items);
             } catch (err) {
@@ -55,37 +42,13 @@ const TestEndpoint = () => {
         fetchData();
     }, []);
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         setData(foods_items);
-    //         setLoading(true);
-    //         setError(null);
-    //         try {
-    //             const response = await axios.post('http://127.0.0.1:5000/generate-suggestions', {
-    //                 input_text: "ooty",
-    //             }, {
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //             });
-    //             setData(response.data);
-    //         } catch (err) {
-    //             setError(err.message);
-    //         }
-    //         setLoading(false);
-    //     };
-
-    //     fetchData();
-    // }, []);
-
-
     const handleDownload = async () => {
         const html2pdf = (await import('html2pdf.js')).default;
         const element = document.getElementById('downloadable-content');
         const opt = {
             margin: 1,
             filename: 'placename_plan.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
+            image: { type: 'jpeg', quality: 2 },
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
@@ -103,29 +66,21 @@ const TestEndpoint = () => {
     return (
         <div className="container">
             <h1>Plan and Recommendations</h1>
-            {loading && <p>Loading...</p>}
             {error && <p className="error">{error}</p>}
             <div id="downloadable-content">
                 <div className="section">
                     <h2>Itinerary</h2>
-                    {/* <div className="cards-container">
-                        {plan && plan.slice(1).map((day, index) => (
-                            <div key={index} className="card">
-                                <ReactMarkdown>{generateMarkdown(day)}</ReactMarkdown>
-                            </div>
-                        ))}
-                    </div> */}
                     {loadingItinerary ? (
                         <div className="loader-container">
                             <ThreeDots height="80" width="80" color="#007BFF" ariaLabel="loading-indicator" />
                         </div>
                     ) : (
                         <div className="cards-container">
-                       {plan && plan.slice(1).map((day, index) => (
-                            <div key={index} className="card">
-                                <ReactMarkdown>{generateMarkdown(day)}</ReactMarkdown>
-                            </div>
-                        ))}
+                            {itineraryData && itineraryData.map((day, index) => (
+                                <div key={index} className="card">
+                                    <ReactMarkdown>{generateMarkdown(day)}</ReactMarkdown>
+                                </div>
+                            ))}
                         </div>
                     )}
                 </div>

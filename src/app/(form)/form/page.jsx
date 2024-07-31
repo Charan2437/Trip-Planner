@@ -1,12 +1,27 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { TextRevealCard } from "../../../components/ui/text-reveal-card";
 import { useRouter } from 'next/navigation';
+import { getUserInfo } from '@/myapi/getUserInfo';
+import { LoadScript,Autocomplete,useLoadScript } from '@react-google-maps/api';
+// import { useLoadScript } from '@react-google-maps/api';
+
+const libraries = ['places'];
 
 const TripPlannerForm = () => {
+    const { isLoaded, loadError } = useLoadScript({
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+        libraries,
+    });
     const router = useRouter();
+    const [inputValue, setInputValue] = useState('');
+    const [autocomplete, setAutocomplete] = useState(null);
+    const [autocomplete1, setAutocomplete1] = useState(null);
+    const [placeDetails, setPlaceDetails] = useState(null);
+    const [Dst, setDst]=useState('');
+    const [inputValue2, setInputValue2]=useState('');
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         source: '',
@@ -21,11 +36,42 @@ const TripPlannerForm = () => {
         outdoorAdventures: false,
         artAndCultural: false,
         amusementParks: false,
-        budgetRange: ''
+        budgetRange: '',
+        days: 1,
     });
-
+    
     const [errors, setErrors] = useState({});
+    useEffect(()=>{
+        const func=async()=>{
+            const user =await getUserInfo();
+            console.log(user);
+        }
+        func;
+    },[]);
+    useEffect(()=>{
+        setFormData({
+            ...formData,
+            source: placeDetails
+        })
+    },[placeDetails])
 
+    useEffect(()=>{
+        setFormData({
+            ...formData,
+            destination: Dst
+        })
+    },[Dst])
+
+
+
+    if (loadError) {
+        return <div>Error loading maps</div>;
+    }
+
+    if (!isLoaded) {
+        return <div>Loading Maps</div>;
+    }
+    
     const validateStep1 = () => {
         let errors = {};
         if (!formData.source) errors.source = "Source is required";
@@ -94,7 +140,21 @@ const TripPlannerForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("hii my name")
         if (validateStep1() && validateStep2()) {
+                        
+            if (formData) {
+                const startDate = formData.startDate; // Replace with your actual start date key
+                const endDate = formData.endDate; // Replace with your actual end date key
+                if (startDate && endDate) {
+                  const numberOfDaysInclusive = calculateDaysInclusive(startDate, endDate);
+                  setFormData(prevFormData => ({
+                    ...prevFormData,
+                    days: numberOfDaysInclusive,
+                  }));
+                  console.log(`Number of days inclusive: ${numberOfDaysInclusive}`);
+                }
+              }
             handleFormSubmit();
         }
     };
@@ -109,15 +169,54 @@ const TripPlannerForm = () => {
                 return '50%';
         }
     };
+    const calculateDaysInclusive = (startDate, endDate) => {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const timeDifference = end.getTime() - start.getTime();
+      return Math.ceil(timeDifference / (1000 * 3600 * 24)) + 1;
+    };
+
+
+
     const handleFormSubmit = (e) => {
         e.preventDefault();
         if (Object.keys(errors).length === 0) {
-            // No errors, proceed to redirect
+            console.log({formData})
             const queryString = new URLSearchParams(formData).toString();
             router.push(`/map?data=${encodeURIComponent(JSON.stringify(formData))}`);
-        }else {
-            // Errors found, do not redirect
+            console.log('came');
+        } else {
             console.log('Form has errors');
+        }
+    };
+
+    
+    const handlePlaceChanged = () => {
+        if (autocomplete !== null) {
+            const place = autocomplete.getPlace();
+            const location = place.geometry.location;
+            setInputValue(place.formatted_address || '');
+            setPlaceDetails({
+                address: place.formatted_address,
+                lat: location.lat(),
+                lng: location.lng(),
+            });
+        } else {
+            console.log('Autocomplete is not loaded yet!');
+        }
+    };
+    const handlePlaceChanged2 = () => {
+        if (autocomplete1 !== null) {
+            const place = autocomplete1.getPlace();
+            const location = place.geometry.location;
+            setInputValue2(place.formatted_address || '');
+            setDst({
+                address: place.formatted_address,
+                lat: location.lat(),
+                lng: location.lng(),
+            });
+        } else {
+            console.log('Autocomplete is not loaded yet!');
         }
     };
 
@@ -126,6 +225,7 @@ const TripPlannerForm = () => {
     <Head>
     <title>Multi-Step Trip Planner</title>
     </Head>
+
     <div 
         className="bg-gray-900 flex flex-col items-center justify-center h-screen space-y-8 p-4"
         style={{
@@ -135,11 +235,15 @@ const TripPlannerForm = () => {
             backgroundRepeat: 'no-repeat'
         }}
     >
-        <TextRevealCard
+        {/* <LoadScript
+            googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+            libraries={['places']}
+        ></LoadScript> */}
+        {/* <TextRevealCard
             text="Plan Your Perfect Trip"
             revealText="Easily with our Form"
             className="max-w-xl w-100"
-        />
+        /> */}
                 <div className="w-full max-w-lg bg-gray-800 p-8 rounded-lg shadow-md">
                     <div id="progress-bar" className="w-full bg-gray-700 rounded-full mb-8">
                         <div id="progress" className="bg-purple-600 h-2 rounded-full" style={{ width: getProgressWidth() }}></div>
@@ -150,24 +254,50 @@ const TripPlannerForm = () => {
                                 <h2 className="text-2xl font-bold text-white mb-4">Step 1: Trip Details</h2>
                                 <div className="mb-4">
                                     <label className="block text-gray-300">Source</label>
+                                    <Autocomplete
+                                            onLoad={(autocompleteInstance) => setAutocomplete(autocompleteInstance)}
+                                            onPlaceChanged={handlePlaceChanged}
+                                            fields={['geometry.location', 'formatted_address']}
+                                    >
+                                            {/* <input
+                                                placeholder="Enter your address"
+                                                value={inputValue}
+                                                onChange={(e) => setInputValue(e.target.value)}
+                                                /> */}
                                     <input
                                         type="text"
                                         name="source"
-                                        value={formData.source}
-                                        onChange={handleChange}
+                                        // value={formData.source}
+                                        // onChange={handleChange}
                                         className="w-full p-2 border border-gray-600 bg-gray-700 text-white rounded mt-1"
+                                        value={inputValue}
+                                        onChange={(e) => setInputValue(e.target.value)}
                                     />
+                                    </Autocomplete>
                                     {errors.source && <p className="text-red-500">{errors.source}</p>}
                                 </div>
                                 <div className="mb-4">
                                     <label className="block text-gray-300">Destination</label>
-                                    <input
+                                    {/* <input
                                         type="text"
                                         name="destination"
                                         value={formData.destination}
                                         onChange={handleChange}
                                         className="w-full p-2 border border-gray-600 bg-gray-700 text-white rounded mt-1"
+                                        /> */}
+                                        <Autocomplete
+                                            onLoad={(autocompleteInstance) => setAutocomplete1(autocompleteInstance)}
+                                            onPlaceChanged={handlePlaceChanged2}
+                                            fields={['geometry.location', 'formatted_address']}
+                                    >
+                                    <input
+                                        type="text"
+                                        name="destination"
+                                        className="w-full p-2 border border-gray-600 bg-gray-700 text-white rounded mt-1"
+                                        value={inputValue2}
+                                        onChange={(e) => setInputValue2(e.target.value)}
                                     />
+                                    </Autocomplete>
                                     {errors.destination && <p className="text-red-500">{errors.destination}</p>}
                                 </div>
                                 <div className="mb-4">
@@ -279,8 +409,8 @@ const TripPlannerForm = () => {
                             <div>
                                 <h2 className="text-2xl font-bold text-white mb-4">Step 3: Review & Submit</h2>
                                 <ul className="mb-4 text-gray-300">
-                                    <li><strong>Source:</strong> {formData.source}</li>
-                                    <li><strong>Destination:</strong> {formData.destination}</li>
+                                    <li><strong>Source:</strong> {formData.source.address}</li>
+                                    <li><strong>Destination:</strong> {formData.destination.address}</li>
                                     <li><strong>Start Date:</strong> {formData.startDate}</li>
                                     <li><strong>End Date:</strong> {formData.endDate}</li>
                                     <li><strong>Number of People:</strong> {formData.numberOfPeople}</li>
