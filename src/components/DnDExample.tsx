@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { Draggable, DropResult, Droppable } from "react-beautiful-dnd";
 import LoadingSkeleton from "../components/ui/LoadingSkeleton";
 import { DndContext } from "@/context/DndContext";
+import Image from 'next/image';
+import myImage from '../../public/send.png'; // Adjust the path as necessary
+
 
 interface Component {
     id: number;
@@ -57,8 +60,8 @@ const DndExample = ({ CardsData, setCardsData,setDirId }: { CardsData: Cards[]; 
         }
     return (
         <DndContext onDragEnd={onDragEnd}>
-            <h1 className="text-center mt-8 mb-3 font-bold text-[25px] ">Drag and Drop Application</h1>
-            <div className="flex gap-4 justify-between my-20 mx-4 flex-wrap overflow-y-auto">        
+    <h1 className="text-center mt-12 mb-3 font-bold text-[25px] ">Plan Arena</h1>
+    <div className="flex gap-4 justify-between my-8 mx-4 flex-wrap overflow-y-auto">      
                 {
                     CardsData.map((val, index) => {
                         return (
@@ -71,7 +74,15 @@ const DndExample = ({ CardsData, setCardsData,setDirId }: { CardsData: Cards[]; 
                                             ref={provided.innerRef}
                                         >
                                             <h2 className="text-center font-bold mb-6 text-black">{val.title}</h2>
-                                            <button onClick={()=>setDirId(val?.id)}> Show Directions </button>
+                                            <button 
+                                                onClick={() => setDirId(val?.id)} 
+                                                className="bg-grey-400 hover:bg-grey text-black font-bold py-2 px-4 transition duration-300"
+                                                >
+<div className="flex items-center border border-gray-300 hover:bg-gray-200 p-2 rounded transition duration-300">
+    <p className="mr-2">Path Finder</p>
+    <Image src={myImage} alt="My Image" width={25} height={20} />
+</div>
+                                                </button>            
                                             <div className="bg-gray-200 mx-1 px-4 py-3 my-3">
                                                                     {typeof val.hotel === 'string' ? val.hotel : val.hotel?.displayName || val.hotel?.name}
                                                                     </div>

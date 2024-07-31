@@ -49,11 +49,17 @@ const MapComponent = ({setSelectedPlace, ListPlaces,dirId,hotels,setHotels,formD
     // console.log(formData)
   },[]);
   const RenderHelper=()=>{
+
     if(dirId===0) return;
-    const latitudesAndLongitudes = ListPlaces[dirId]?.components.map(({ location }) => ({
+    console.log(ListPlaces)
+    let latitudesAndLongitudes = ListPlaces[dirId]?.components.map(({ location }) => ({
       lat: location.lat,
       lng: location.lng
     }));
+    let hotelLocation = ListPlaces[dirId]?.hotel?.location;
+    if (hotelLocation) {
+      latitudesAndLongitudes = [hotelLocation, ...latitudesAndLongitudes];
+    }
     console.log(latitudesAndLongitudes)
     RenderDirections(mapInstance, mapsApi, latitudesAndLongitudes)
   }
@@ -80,9 +86,10 @@ const MapComponent = ({setSelectedPlace, ListPlaces,dirId,hotels,setHotels,formD
       return !isNaN(lat) && !isNaN(lng);
     });
     
-    // console.log({ListPlaces})
+    console.log({ListPlaces})
     if(!ListPlaces || ListPlaces.length < 2){
-      ListPlaces = [{lat: 37.77, lng: -122.447}, { lat: 37.79, lng: -122.41 }, { lat: 37.79, lng: -122.41 }, {lat: 37.768, lng: -122.511 }]
+      alert("Please select atleast 2 places to get directions");
+      // ListPlaces = [{lat: 37.77, lng: -122.447}, { lat: 37.79, lng: -122.41 }, { lat: 37.79, lng: -122.41 }, {lat: 37.768, lng: -122.511 }]
     }
     directionsRenderer?.setMap(null);
     let n = ListPlaces.length;
@@ -265,13 +272,22 @@ const MapComponent = ({setSelectedPlace, ListPlaces,dirId,hotels,setHotels,formD
           </Marker>
         ))}
       </GoogleMap>
-      <button onClick={fetchPlaces}>Load places</button>
-      <div style={{display : "flex" , justifyContent : "space-around"}}>
+      <div className="relative">
+  {/* Your map component here */}
+  <div className="absolute bottom-4 left-4 space-y-2">
+    <button onClick={fetchPlaces} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+      Load places
+    </button>
+    <button onClick={fetchHotels} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+      Hotels Display
+    </button>
+  </div>
+</div>
+      {/* <div style={{display : "flex" , justifyContent : "space-around"}}>
         <button variant="contained" onClick={()=>RenderDirections(mapInstance, mapsApi, ListPlaces)} sx={{marginBottom : "10px"}}>Test Directions</button>
         <br />
         <button variant="contained" sx={{marginBottom : "10px"}} onClick={()=>DirectionStop() } >Remove Directions</button>
-      </div>
-      <button onClick={fetchHotels}> Hotels Display</button>
+      </div> */}
     </>
   );
 };

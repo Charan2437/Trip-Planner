@@ -29,6 +29,11 @@
 } from 'react-accessible-accordion';
 import {createRoot} from 'react-dom/client'
 import Markdown from 'react-markdown'
+import StarRating from './StarRating'
+import LoadingSkeleton from '@/components/ui/LoadingSkeleton';
+import Image from 'next/image';
+import myImage from '../../../../public/pdfsave.png'
+import ImageAi from '../../../../public/ai-technology.png'
 
   const Map = () => {
     const router = useRouter();
@@ -44,7 +49,7 @@ import Markdown from 'react-markdown'
     const searchParams = useSearchParams();
     const [travelData, setTravelData] = useState(null)
     const [isFormReady, setIsFormReady] = useState(false);
-
+    const [loading,setLoading]=useState(false);
     useEffect(() => {
         const dataParam = searchParams.get('data');
             setFormData(JSON.parse(dataParam));
@@ -293,8 +298,7 @@ import Markdown from 'react-markdown'
 
       const About = () => (
         <div className="space-y-4">
-          <div className="bg-white bg-opacity-20 p-4  rounded-lg shadow-md border border-white text-black space-y-4">
-          <Leftcard selectedPlace={selectedPlace} />
+<div className="bg-gray-100 bg-opacity-20 p-4 rounded-lg shadow-md border border-black text-black space-y-4">          <Leftcard selectedPlace={selectedPlace} />
           </div>
           {/* <div className="bg-white bg-opacity-20 p-4 h-20 rounded-lg shadow-md border border-white flex items-center text-black space-y-4">
             <FaMapMarkerAlt className="text-red-500 mr-2" />
@@ -319,16 +323,27 @@ import Markdown from 'react-markdown'
       //   </div>
       // );
       const TravelOptions = () => (
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="p-4 bg-white bg-opacity-20 h-auto w-full max-w-md rounded-lg shadow-md border border-white text-black space-y-4">
-            <button onClick={genrateOptions}>Generate Travel Options</button>
-            <h2 className="text-xl font-semibold mb-2">Travel Options</h2>
-            {travelData && <Markdown>{travelData}</Markdown>}
+        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+          <div className={`p-6 h-auto w-full max-w-md rounded-lg shadow-lg border text-black space-y-4 ${!travelData || travelData.length <= 30 ? 'bg-red-100 border-red-300' : 'bg-white bg-opacity-90 border-gray-300'}`}>
+            {!travelData || travelData.length <= 30 ? (
+              <>
+                <button 
+                  onClick={genrateOptions} 
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                  Generate Travel Options
+                </button>
+                <p className="text-red-500">No travel data available. Please generate travel options.</p>
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-semibold mb-4">Travel Options</h2>
+                <Markdown>{travelData}</Markdown>
+              </>
+            )}
           </div>
         </div>
       );
-
-
     
     const Itinerary = () => {
         return (
@@ -353,7 +368,7 @@ import Markdown from 'react-markdown'
                                     ))}
                                 </div>
                                 <h1>
-                                  show Directions
+                                  Details go here..
                                 </h1>
 
                             </AccordionItemPanel>
@@ -411,20 +426,54 @@ import Markdown from 'react-markdown'
           }
       };
 
+    // const addPlan = () => {
+    //   const newComponent = selectedPlace.Eg;
+    //       const newObject = {
+    //     ...newComponent,
+    //     name: newComponent.displayName,
+    //   }
+    //   if(newComponent.types.includes("lodging")){
+    //     console.log("comming")
+    //     let x= getNextValue();
+    //     setData(prevData =>
+    //       prevData.map(card => (card.id == x ? { ...card, hotel: newObject } : card))
+    //     );
+    //     return;
+    //   }
+    //   setData(prevData =>
+    //     prevData.map(card => 
+    //       card.id === 0
+    //         ? { ...card, components: [...card.components, newObject] }
+    //         : card
+    //     )
+    //   );
+    // };
     const addPlan = () => {
       const newComponent = selectedPlace.Eg;
-          const newObject = {
+      const newObject = {
         ...newComponent,
         name: newComponent.displayName,
+      };
+    
+      // Check if the plan already exists
+      const planExists = data.some(card => 
+        card.components?.some(component => component.name === newObject.name)
+      );
+    
+      if (planExists) {
+        alert("Place already exists");
+        return;
       }
-      if(newComponent.types.includes("lodging")){
-        console.log("comming")
-        let x= getNextValue();
+    
+      if (newComponent.types.includes("lodging")) {
+        console.log("comming");
+        let x = getNextValue();
         setData(prevData =>
           prevData.map(card => (card.id == x ? { ...card, hotel: newObject } : card))
         );
         return;
       }
+    
       setData(prevData =>
         prevData.map(card => 
           card.id === 0
@@ -433,8 +482,8 @@ import Markdown from 'react-markdown'
         )
       );
     };
-
     const Leftcard =({selectedPlace}) => {
+      console.log({selectedPlace})
       if(!selectedPlace) {
         return (
           <>
@@ -443,45 +492,69 @@ import Markdown from 'react-markdown'
         )
       }
       const defaultPhoto = "https://via.placeholder.com/400";
-      
       let photoURI = selectedPlace.Eg.photos.length > 0 ? selectedPlace.Eg.photos[1]?.name : defaultPhoto;
-      const placeId = selectedPlace.Eg.id;
-      if(photoURI !== defaultPhoto) photoURI = `https://places.googleapis.com/v1/${photoURI}/media?maxWidthPx=400&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
-      const editorialSummary = selectedPlace.Eg.editorialSummary || "No editorial summary available.";
-      return (
-        <div className="card rounded-lg shadow-md overflow-hidden mb-8" key={selectedPlace.Eg.id}> {/* Ensure each place has a unique key */}
-          <img src={photoURI} alt={selectedPlace.Eg.displayName} className="card-image" height={200} />
-          <div className="p-4">
-            <h2 className="text-xl mb-2 text-white">{selectedPlace.Eg.displayName}</h2>
-            <p className="text-gray-400 mb-2">Rating: {selectedPlace.Eg.rating}</p>
-            <p className="text-gray-500 mb-4">User Ratings: {selectedPlace.Eg.userRatingCount}</p>
-            <div className="highlight-bg p-4 rounded-lg shadow-inner">
-              <p className="text-white mb-4">{editorialSummary}</p>
-              <a href={`https://www.google.com/maps/search/?api=1&query=${selectedPlace.Eg.location.lat},${selectedPlace.Eg.location.lng}`} className="text-blue-500" target="_blank" rel="noopener noreferrer">View on Map</a>
-            </div>
-            <div className="highlight-bg p-4 rounded-lg shadow-inner">
-              <button onClick={addPlan}> Add to plan </button>
-            </div>
-          </div>
-        </div>
-      )}
+const placeId = selectedPlace.Eg.id;
+if (photoURI !== defaultPhoto) photoURI = `https://places.googleapis.com/v1/${photoURI}/media?maxWidthPx=400&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
+const editorialSummary = selectedPlace.Eg.editorialSummary || "No editorial summary available.";
+const { displayName, rating, userRatingCount, location, businessStatus } = selectedPlace.Eg;
+
+const businessStatusClass = businessStatus === 'OPERATIONAL' ? 'text-green-500' : 'text-red-500';
+
+return (
+<div className="card rounded-lg overflow-hidden mb-8 " key={selectedPlace.Eg.id}>    <img 
+      src={photoURI} 
+      alt={displayName} 
+      className="w-full h-48 object-cover sm:h-56 md:h-64 lg:h-72 xl:h-80" 
+    />
+    <div className="p-4">
+      <h2 className="text-xl mb-2">{displayName}</h2>
+      <div className={styles.ratingText}>
+        <StarRating rating={rating} />
+        <span className={styles.userRatingCount}>({userRatingCount})</span>
+      </div>
+      <div className={`highlight-bg p-4 rounded-lg shadow-inner mb-1 ${businessStatusClass}`}>
+        <p className="text mb-2">{businessStatus === 'OPERATIONAL' ? 'Operational' : 'Closed'}</p>
+      </div>
+        <p className="text mb-2">{editorialSummary}</p>
+      <div className="highlight-bg p-4 rounded-lg shadow-inner">
+        <button onClick={addPlan} className="w-full bg-blue-500 text-white p-2 rounded"> Add to plan </button>
+      </div>
+    </div>
+  </div>
+);
+    };
 
 
     return (
   <>
 <div className="flex h-screen bg-cover bg-fixed text-black">
   <div className="w-2/5 h-full overflow-y-auto p-4">
-    <div className="sticky top-0 bg-white bg-opacity-10 p-4 rounded-lg shadow-lg">
+    {/* <div className="sticky top-0 bg-white bg-opacity-10 p-4 rounded-lg shadow-lg"> */}
       {/* <img src="/path-to-your-image.jpg" alt="Header" className="w-full h-64 object-cover rounded-lg mb-4" /> */}
       <div className="flex justify-around mb-4">
-        <button onClick={() => setSelectedTab('about')} className={`p-4  w-1/3 space-y-4 ${selectedTab === 'about' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} transition`}>About</button>
-        <button onClick={() => setSelectedTab('itinerary')} className={`p-4  w-1/3 space-y-4 ${selectedTab === 'itinerary' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} transition`}>Itinerary</button>
-        <button onClick={() => setSelectedTab('travelOptions')} className={`p-4  w-1/3 space-y-4 ${selectedTab === 'travelOptions' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} transition`}>Travel Options</button>
-      </div>
+  <button 
+    onClick={() => setSelectedTab('about')} 
+    className={`py-2 px-4 w-1/3 text-center rounded-lg border border-gray-300 ${selectedTab === 'about' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} hover:bg-gray-200 transition duration-300 ease-in-out mx-1`}
+  >
+    About
+  </button>
+  <button 
+    onClick={() => setSelectedTab('itinerary')} 
+    className={`py-2 px-4 w-1/3 text-center rounded-lg border border-gray-300 ${selectedTab === 'itinerary' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} hover:bg-gray-200 transition duration-300 ease-in-out mx-1`}
+  >
+    Itinerary
+  </button>
+  <button 
+    onClick={() => setSelectedTab('travelOptions')} 
+    className={`py-2 px-4 w-1/3 text-center rounded-lg border border-gray-300 ${selectedTab === 'travelOptions' ? 'bg-gray-300' : 'bg-white bg-opacity-10'} hover:bg-gray-200 transition duration-300 ease-in-out mx-1`}
+  >
+    Travel Options
+  </button>
+</div>
       {renderContent()}
-    </div>
+    {/* </div> */}
   </div>
-  <div className="w-3/5 h-full p-4">
+  <div className="w-3/5 h-full p-5 m-0">
     {/* <div className="md:col-span-8 map bg-gray-700 rounded-lg shadow-md h-100"> */}
     <MapComponent
       ListPlaces={data}
@@ -495,14 +568,29 @@ import Markdown from 'react-markdown'
   </div>
   {/* </div> */}
   <div className="w-2/5 h-full p-4 overflow-y-auto">
+  <button 
+  onClick={AiAutomate} 
+  className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded border border-gray-700 transition duration-300 ease-in-out transform hover:scale-105 absolute top-4 right-4 mr-4 "
+>
+  <div className="flex items-center">
+    <p className="mr-2">Ai Automate</p>
+    <Image src={ImageAi} alt="Ai Automate Icon" width={25} height={20} />
+  </div>
+</button>
+<button 
+  onClick={handleDownloadPdf} 
+  className="bg-gray-500 hover:bg-gray-700 text-white font-bold rounded border border-gray-700 transition duration-300 ease-in-out transform hover:scale-105 absolute top-4 right-100 p-0"
+>
+  <div className="flex items-center border border-gray-300 hover:bg-gray-200 rounded transition duration-300 p-2">
+    <p className="mr-2">Save As Pdf</p>
+    <Image src={myImage} alt="My Image" width={25} height={20} />
+  </div>
+</button>
   <DragDrop CardsData={data} setCardsData={setData} setDirId={setDirId} />
 </div>
 </div>
 
 
-    <button onClick={AiAutomate} >Ai Automate</button>
-    <button onClick={SaveTrip}>Save Trip</button>
-    <button onClick={handleDownloadPdf}>Download Pdf</button>
 
     </>
     );
