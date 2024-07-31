@@ -14,17 +14,17 @@ const mapContainerStyle = {
   height: '90vh',
   width: '100%',
 };
-const center = {
-  lat: 16.2202889,
-  lng: 80.650589,
-};
+// const center = {
+//   lat: 16.2202889,
+//   lng: 80.650589,
+// };
 const options = {
   styles: mapStyles,
   disableDefaultUI: true,
   zoomControl: true,
 };
 
-const MapComponent = ({setSelectedPlace, ListPlaces,dirId,hotels,setHotels}) => {
+const MapComponent = ({setSelectedPlace, ListPlaces,dirId,hotels,setHotels,formData}) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries,
@@ -45,7 +45,9 @@ const MapComponent = ({setSelectedPlace, ListPlaces,dirId,hotels,setHotels}) => 
     setMapInstance(map);
     setMapsApi(map);
   }, []);
-
+  useEffect(()=>{
+    // console.log(formData)
+  },[]);
   const RenderHelper=()=>{
     if(dirId===0) return;
     const latitudesAndLongitudes = ListPlaces[dirId]?.components.map(({ location }) => ({
@@ -134,6 +136,9 @@ const MapComponent = ({setSelectedPlace, ListPlaces,dirId,hotels,setHotels}) => 
     }
 
   };
+  // useEffect(()=>{
+
+  // },[FormData]);
   
   const fetchHotels = async () => {
     if(hotels.length > 0){
@@ -192,7 +197,7 @@ const MapComponent = ({setSelectedPlace, ListPlaces,dirId,hotels,setHotels}) => 
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={11}
-        center={center}
+        center={{lat : formData.destination.lat, lng : formData.destination.lng}}
         options={options}
         onLoad={onMapLoad}
       >

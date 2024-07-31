@@ -42,31 +42,32 @@ import Markdown from 'react-markdown'
     const [tripData , setTripData] = useState();
     const [formData,setFormData] = useState();
     const searchParams = useSearchParams();
-    const [travelData, setTravelData] = useState('# Travel Options')
+    const [travelData, setTravelData] = useState(null)
+    const [isFormReady, setIsFormReady] = useState(false);
 
     useEffect(() => {
         const dataParam = searchParams.get('data');
             setFormData(JSON.parse(dataParam));
             
-            const calculateDaysInclusive = (startDate, endDate) => {
-              const start = new Date(startDate);
-              const end = new Date(endDate);
-              const timeDifference = end.getTime() - start.getTime();
-              return Math.ceil(timeDifference / (1000 * 3600 * 24)) + 1;
-            };
+            // const calculateDaysInclusive = (startDate, endDate) => {
+            //   const start = new Date(startDate);
+            //   const end = new Date(endDate);
+            //   const timeDifference = end.getTime() - start.getTime();
+            //   return Math.ceil(timeDifference / (1000 * 3600 * 24)) + 1;
+            // };
         
-            if (formData) {
-              const startDate = formData.startDate; // Replace with your actual start date key
-              const endDate = formData.endDate; // Replace with your actual end date key
-              if (startDate && endDate) {
-                const numberOfDaysInclusive = calculateDaysInclusive(startDate, endDate);
-                setFormData(prevFormData => ({
-                  ...prevFormData,
-                  days: numberOfDaysInclusive,
-                }));
-                console.log(`Number of days inclusive: ${numberOfDaysInclusive}`);
-              }
-            }
+            // if (formData) {
+            //   const startDate = formData.startDate; // Replace with your actual start date key
+            //   const endDate = formData.endDate; // Replace with your actual end date key
+            //   if (startDate && endDate) {
+            //     const numberOfDaysInclusive = calculateDaysInclusive(startDate, endDate);
+            //     setFormData(prevFormData => ({
+            //       ...prevFormData,
+            //       days: numberOfDaysInclusive,
+            //     }));
+            //     console.log(`Number of days inclusive: ${numberOfDaysInclusive}`);
+            //   }
+            // }
 
     }, [searchParams]);
     
@@ -135,7 +136,7 @@ import Markdown from 'react-markdown'
       let days= formData?.days ?? 1;
       const newCardsData = generateCardsData(days);
       setData(newCardsData);
-      console.log(newCardsData)
+      setIsFormReady(true);
     }, [formData]); 
 
     const AiAutomate = () => {
@@ -310,11 +311,20 @@ import Markdown from 'react-markdown'
         </div>
       );
     
+      // const TravelOptions = () => (
+      //   <div className="p-4 bg-white bg-opacity-20 h-48 rounded-lg shadow-md border border-white text-black space-y-4">
+      //     <button onClick={genrateOptions}>Generate Travel Options</button>
+      //     <h2 className="text-xl font-semibold mb-2">Travel Options</h2>
+      //     {travelData && <Markdown>{travelData}</Markdown>}
+      //   </div>
+      // );
       const TravelOptions = () => (
-        <div className="p-4 bg-white bg-opacity-20 h-48 rounded-lg shadow-md border border-white text-black space-y-4">
-          <button onClick={genrateOptions}>Generate Travel Options</button>
-          <h2 className="text-xl font-semibold mb-2">Travel Options</h2>
-          <Markdown> {travelData} </Markdown>
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="p-4 bg-white bg-opacity-20 h-auto w-full max-w-md rounded-lg shadow-md border border-white text-black space-y-4">
+            <button onClick={genrateOptions}>Generate Travel Options</button>
+            <h2 className="text-xl font-semibold mb-2">Travel Options</h2>
+            {travelData && <Markdown>{travelData}</Markdown>}
+          </div>
         </div>
       );
 
@@ -480,6 +490,7 @@ import Markdown from 'react-markdown'
       hotels={hotels}
       setHotels={setHotels}
       setSelectedHotel={setSelectedHotel}
+      formData={formData}
     />
   </div>
   {/* </div> */}
