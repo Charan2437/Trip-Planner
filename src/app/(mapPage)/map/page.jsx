@@ -27,6 +27,8 @@
     AccordionItemHeading,
     AccordionItemPanel,
 } from 'react-accessible-accordion';
+import {createRoot} from 'react-dom/client'
+import Markdown from 'react-markdown'
 
   const Map = () => {
     const router = useRouter();
@@ -40,6 +42,7 @@
     const [tripData , setTripData] = useState();
     const [formData,setFormData] = useState();
     const searchParams = useSearchParams();
+    const [travelData, setTravelData] = useState('# Travel Options')
 
     useEffect(() => {
         const dataParam = searchParams.get('data');
@@ -55,7 +58,6 @@
             if (formData) {
               const startDate = formData.startDate; // Replace with your actual start date key
               const endDate = formData.endDate; // Replace with your actual end date key
-              console.log("cams")
               if (startDate && endDate) {
                 const numberOfDaysInclusive = calculateDaysInclusive(startDate, endDate);
                 setFormData(prevFormData => ({
@@ -66,7 +68,6 @@
               }
             }
 
-            console.log(formData)
     }, [searchParams]);
     
 
@@ -311,8 +312,9 @@
     
       const TravelOptions = () => (
         <div className="p-4 bg-white bg-opacity-20 h-48 rounded-lg shadow-md border border-white text-black space-y-4">
+          <button onClick={genrateOptions}>Generate Travel Options</button>
           <h2 className="text-xl font-semibold mb-2">Travel Options</h2>
-          <p>Travel options content goes here.</p>
+          <Markdown> {travelData} </Markdown>
         </div>
       );
 
@@ -376,8 +378,8 @@
 
       const genrateOptions= async( e )=>{
           e.preventDefault();
-          let source = "hyderabad";
-          let destination = "kadapa";
+          let source = formData.source.address;
+          let destination = formData.destination.address;
           try {
             const response = await fetch('http://localhost:5000/generate-travel-options', {
               method: 'POST',
@@ -391,8 +393,9 @@
               throw new Error('Network response was not ok');
             }
       
-            const data = await response.json();
-            console.log({data})
+            const dataa = await response.json();
+            console.log({dataa})
+            setTravelData(dataa.resultbroo);
           } catch (error) {
             console.log(error)
           }
@@ -489,7 +492,7 @@
     <button onClick={AiAutomate} >Ai Automate</button>
     <button onClick={SaveTrip}>Save Trip</button>
     <button onClick={handleDownloadPdf}>Download Pdf</button>
-    <button onClick={genrateOptions}>Generate Travel Options</button>
+
     </>
     );
   };
