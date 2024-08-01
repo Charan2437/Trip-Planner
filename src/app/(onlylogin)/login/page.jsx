@@ -315,6 +315,8 @@ function LoginForm() {
   };
 
   const signUp = async () => {
+    
+    console.log("came")
     try {
       if (!handleEmailValidation()) {
         setEmailValid(false);
@@ -326,7 +328,7 @@ function LoginForm() {
         setEmailExists(true);
         return;
       }
-
+      
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       await updateProfile(user, { displayName: name });
@@ -340,6 +342,7 @@ function LoginForm() {
       router.push('/');
     } catch (err) {
       console.error("Error signing up:", err.message);
+      setAuthError(err.message)
     }
   };
 
@@ -384,11 +387,14 @@ function LoginForm() {
               <button type="button" onClick={signUpWithGoogle}>Sign Up with Google</button>
             </div>
             <span>or use your email for registration</span>
-            <input type="text" placeholder="Name" onChange={(e) => setName(e.target.value)} required />
-            <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+            <input         className="input-field"
+ type="text" placeholder="Name" onChange={(e) => setName(e.target.value)} required />
+            <input         className="input-field"
+ type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
             {!emailValid && <p className="error-message">Please enter a valid email address.</p>}
             {emailExists && <p className="error-message">This email address is already registered.</p>}
-            <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+            <input         className="input-field"
+ type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
             <button type="button" onClick={signUp}>Sign Up</button>
           </form>
         </div>
@@ -399,8 +405,10 @@ function LoginForm() {
               <button type="button" onClick={signInWithGoogle}>Sign In with Google</button>
             </div>
             <span>or use your account</span>
-            <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-            <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+            <input         className="input-field"
+ type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+            <input         className="input-field"
+ type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
             <a href="#">Forgot your password?</a>
             <button type="button" onClick={signIn}>Sign In</button>
             {authError && <p className="error-message">{authError}</p>} {/* Display authentication error */}

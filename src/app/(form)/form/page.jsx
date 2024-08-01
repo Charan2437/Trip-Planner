@@ -23,6 +23,8 @@ const TripPlannerForm = () => {
     const [Dst, setDst]=useState('');
     const [inputValue2, setInputValue2]=useState('');
     const [step, setStep] = useState(1);
+    const [isFormReady, setIsFormReady] = useState(false);
+
     const [formData, setFormData] = useState({
         source: '',
         destination: '',
@@ -61,7 +63,12 @@ const TripPlannerForm = () => {
             destination: Dst
         })
     },[Dst])
-
+    useEffect(() => {
+        if (isFormReady) {
+            handleFormSubmit();
+            setIsFormReady(false);
+        }
+    }, [formData, isFormReady]);
 
 
     if (loadError) {
@@ -139,10 +146,9 @@ const TripPlannerForm = () => {
     };
 
     const handleSubmit = async (e) => {
+        if(formData?.days==-1) return ;
         e.preventDefault();
-        console.log("hii my name")
-        if (validateStep1() && validateStep2()) {
-                        
+        console.log(formData)
             if (formData) {
                 const startDate = formData.startDate; // Replace with your actual start date key
                 const endDate = formData.endDate; // Replace with your actual end date key
@@ -153,10 +159,10 @@ const TripPlannerForm = () => {
                     days: numberOfDaysInclusive,
                   }));
                   console.log(`Number of days inclusive: ${numberOfDaysInclusive}`);
+                  setIsFormReady(true);
                 }
               }
-            handleFormSubmit();
-        }
+       
     };
 
     const getProgressWidth = () => {
@@ -178,13 +184,11 @@ const TripPlannerForm = () => {
 
 
 
-    const handleFormSubmit = (e) => {
-        e.preventDefault();
+    const handleFormSubmit = () => {
         if (Object.keys(errors).length === 0) {
             console.log({formData})
             const queryString = new URLSearchParams(formData).toString();
             router.push(`/map?data=${encodeURIComponent(JSON.stringify(formData))}`);
-            console.log('came');
         } else {
             console.log('Form has errors');
         }
@@ -426,7 +430,7 @@ const TripPlannerForm = () => {
                                 <button type="button" onClick={prevStep} className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 mr-4">
                                     Previous
                                 </button>
-                                <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700" onClick={handleFormSubmit}>
+                                <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700" onClick={handleSubmit}>
                                     Submit
                                 </button>
                             </div>

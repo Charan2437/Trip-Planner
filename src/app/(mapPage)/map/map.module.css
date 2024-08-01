@@ -20,7 +20,30 @@
   .highlightBg {
     background-color: #1b2029;
   }
+  .ratingText {
+    display: flex;
+    align-items: center;
+  }
   
+  .userRatingCount {
+    margin-left: 0.5rem; /* Adjust the spacing as needed */
+  }
+  .starRating {
+    display: flex;
+    align-items: center;
+  }
+  
+  .star {
+    color: #FFD700; /* Gold color for filled stars */
+    font-size: 1.5rem; /* Adjust the size as needed */
+    margin-right: 0.1rem; /* Space between stars */
+  }
+  
+  .starEmpty {
+    color: #d3d3d3; /* Light gray color for empty stars */
+    font-size: 1.5rem; /* Adjust the size as needed */
+    margin-right: 0.1rem; /* Space between stars */
+  }
   .bucketListItem {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
