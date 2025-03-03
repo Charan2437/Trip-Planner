@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from chat_bot import bot_model
 from planner import create_chat_session
+from google.api_core.exceptions import ResourceExhausted
 
 app = Flask(__name__)
 CORS(app)
@@ -9,8 +10,6 @@ CORS(app)
 @app.route("/")
 def hello():
     return jsonify({"message": "Hello, World!"})
-
-
 
 @app.route("/api/user")
 def return_home():
@@ -23,9 +22,19 @@ def chatbot():
     if not user_input:
         return jsonify({"error": "No message provided"}), 400
 
-    response = bot_model.send_message(user_input)
-    print(response.text)
-    return jsonify({"response": response.text})
+    try:
+        response = bot_model.send_message(user_input)
+        if response is None:
+            return jsonify({"error": "Failed to get response from chatbot"}), 500
+        print(response.text)
+        return jsonify({"response": response.text})
+    except ResourceExhausted:
+        return jsonify({
+            "error": "API quota has been exhausted. Please try again in a few moments."
+        }), 429
+    except Exception as e:
+        print(f"Error in chatbot: {str(e)}")
+        return jsonify({"error": "An unexpected error occurred"}), 500
 
 @app.route('/api/generate-itinerary', methods=['POST'])
 def generate_itinerary():
@@ -45,10 +54,17 @@ def generate_itinerary():
     "budget": {budget}
     """
 
-    chat_session = create_chat_session()
-
-    response = chat_session.send_message(input_message)
-    return jsonify(response.text)
+    try:
+        chat_session = create_chat_session()
+        response = chat_session.send_message(input_message)
+        return jsonify(response.text)
+    except ResourceExhausted:
+        return jsonify({
+            "error": "API quota has been exhausted. Please try again in a few moments."
+        }), 429
+    except Exception as e:
+        print(f"Error in generate_itinerary: {str(e)}")
+        return jsonify({"error": "An unexpected error occurred"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8080)
+    app.run(host='127.0.0.1', debug=True, port=5000)
